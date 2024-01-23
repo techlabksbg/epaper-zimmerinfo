@@ -9,4 +9,8 @@
 
 ESP32 identifiziert gegenüber dem Server (z.B. via Mac-Adresse).
 
-
+## Links zu ReadMe 
+[Hier](basics/ics/README.md) geht es zu ics  
+[Hier](basics/esp32/helloworld/include/README.md) geht es zu include  
+[Hier](basics/esp32/helloworld/lib/README.md) geht es zur Helloworld-library  
+[Hier](basics/esp32/helloworld//README.md) geht es zum test
