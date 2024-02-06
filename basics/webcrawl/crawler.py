@@ -62,3 +62,25 @@ for a in s.findall(".//nav/a"):
     if d!=None:
         print(a.attrib['href'])
         print(d.text)
+
+# Mögliche Ausgabe:
+""""
+index.php?pageid=1&id=93afa554345618c7&transid=243dc2
+Start
+index.php?pageid=21300&id=93afa554345618c7&transid=243dc2
+Noten
+index.php?pageid=21100&id=93afa554345618c7&transid=243dc2
+Absenzen
+index.php?pageid=21200&id=93afa554345618c7&transid=243dc2
+Agenda
+index.php?pageid=24500&id=93afa554345618c7&transid=243dc2
+Pensen
+index.php?pageid=24000&id=93afa554345618c7&transid=243dc2
+Meine Klasse
+index.php?pageid=22300&id=93afa554345618c7&transid=243dc2
+Kommunikation
+index.php?pageid=24030&id=93afa554345618c7&transid=243dc2
+Listen&Dok.
+index.php?pageid=23118&id=93afa554345618c7&transid=243dc2
+eSchool
+"""
