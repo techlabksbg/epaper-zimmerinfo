@@ -10,8 +10,8 @@ import time
 
 if not os.path.exists("mysecrets.py"):
     with open("mysecrets.py", "w") as f:
-        f.write("raise 'bitte diese Zeile löschen und Username und Passwort in der Datei mysecrets.py eintragen'\nlogin='hans.wurst'\npasswort='123456'\n")
-    raise "Die Datei mysecrets.py wurde angelegt. Bitte bearbeiten Sie die Datei mysecrets.py."
+        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\nlogin='hans.wurst'\npasswort='123456'\n")
+    raise RuntimeError("Die Datei mysecrets.py wurde angelegt. Bitte bearbeiten Sie die Datei mysecrets.py.")
 
 import mysecrets
 
@@ -69,12 +69,12 @@ class NesaPilot:
 
     def getStartSeite(self):
         self.clearCookies()
-        print("Startseite laden...")
+        print("--> Startseite laden... <--")
         return self.execCurl("startseite.curl")
 
     def performLogin(self):
         t = self.getStartSeite() 
-        print("Perform login...")
+        print("--> Perform login... <--")
         # input Element mit Attribut name, das gleich loginhash ist. Davon gerne das Attribut value
         loginhash = t.find(".//input[@name='loginhash']").value
         r = [["LOGIN", urllib.parse.quote_plus(mysecrets.login)],
@@ -120,28 +120,28 @@ class NesaPilot:
                 
 
     def getRooms(self, roomlist, numDays=7):
-        print("Dem Link «Agenda» folgen...")
+        print("--> Dem Link «Agenda» folgen... <--")
         self.execCurl("generic.curl", [["MYURL",self.nav['Agenda']]])
-        print("Dem Link «Raumpläne» folgen...")
+        print("--> Dem Link «Raumpläne» folgen... <--")
         self.execCurl("generic.curl", [["MYURL",self.nav['Raumpläne']]])
         self.getRoomDict()  # Get List of all available room (and corresponding indices)
-        print(f"Liste der Räume: #{self.rooms}")
+        print(f"--> Liste der Räume: {self.rooms} <--")
         for room in roomlist:
             if not room in self.rooms:  # Does this room even exist?
                 raise f"Raum #{room} ist nicht in der Liste der Räume. Vorhandene Räume:\n{self.rooms.keys}"
             # Load room page
-            print(f"Seite für den Raum #{room} laden...")
+            print(f"--> Seite für den Raum {room} laden... <--")
             self.execCurl("generic.curl", [["MYURL",self.nav['Raumpläne']+f"&listindex_s={self.rooms[room]}&subFilter="]])
             # Extract Ajax Link for this room
             ajaxURL = self.getRoomAjaxLink(numDays)
             # Make Ajax Request
-            print("XML-Daten für Raum #{room} laden...")
+            print(f"--> XML-Daten für Raum {room} laden... <--")
             xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
             # Save xml-Document
             datei = f"roomdata/{room}.xml"
             with open(datei, "wb") as f:
                 f.write(html.tostring(xml))
-            print(f"Saved plan to {datei}")
+            print(f"--> Saved plan to {datei} <--")
 
 
 if __name__== "__main__":
