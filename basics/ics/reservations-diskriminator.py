@@ -1,12 +1,19 @@
 import re
 
 ics = open("h21.ics", "r")
+reservations = []
 #for line in range(linenumber):     //When ics is properly imported.
-while True:
+for i in range(10000):
     line = ics_data = ics.readline()
     summary = re.search("SUMMARY:(.*)", line)
     if summary != None:
         x = summary.string[8:].strip()
-        print(x)
-        if x == "Reserviert":
-            print("Achtung x ist reserviert")
+        reservations.append(x)
+print(reservations)
+for event in reservations: #Reservationen müssen auf reguläre und ausserordentliche geprüft werden
+    normal = re.search(".*-.*-.*", event)
+    if normal != None:
+            print(x)
+            if x == "Reserviert":
+                print("Achtung x ist reserviert")
+        
