@@ -11,9 +11,10 @@ for i in range(10000):
         reservations.append(x)
 print(reservations)
 for event in reservations: #Reservationen müssen auf reguläre und ausserordentliche geprüft werden
-    normal = re.search(".*-.*-.*", event)
+    normal = re.search("(.*-.*-.*)", event)
     if normal != None:
-            print(x)
-            if x == "Reserviert":
-                print("Achtung x ist reserviert")
+        normal = normal.group(1)
+    print(normal)
+    if normal == None:
+            print("Achtung x ist reserviert")
         
