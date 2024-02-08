@@ -7,10 +7,10 @@ if not os.path.exists(datei):
     raise f"Datei {datei} nicht gefunden."
 
 tree = html.parse(datei)
-
-for a in tree.findall(".//nav/a"):
-
-    d = a.find("./div")
-    if d!=None:
-        print(a.attrib['href'])
-        print(d.text)
+# Eintrag:
+# /html/body/div[4]/div/main/div/div/main/div/div[4]/div[5]/div[1]/div[1]
+# //*[@id="scheduler"]/div[5]
+for a in tree.findall(".//*[@event_id]"):
+    print(a)
+    d = a.find(".//div[@class='stpt_event_title']")
+    print(d.attrib['title'])
