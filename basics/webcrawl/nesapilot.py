@@ -120,6 +120,8 @@ class NesaPilot:
                 
 
     def getRooms(self, roomlist, numDays=7):
+        if not os.path.exists("roomdata"):
+            os.mkdir("roomdata")
         print("--> Dem Link «Agenda» folgen... <--")
         self.execCurl("generic.curl", [["MYURL",self.nav['Agenda']]])
         print("--> Dem Link «Raumpläne» folgen... <--")
