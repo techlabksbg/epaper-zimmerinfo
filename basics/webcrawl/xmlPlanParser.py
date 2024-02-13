@@ -7,7 +7,5 @@ events = []
 for event in tree.findall(".//event"):
     events.append(Event(event))
     
-#    for entry in event.findall(".//*"):
-#        if (entry.text):
-#            print(f"{entry.tag} -> {entry.text}")
-#    print("-----------------------------")
+events.sort(key= lambda e : e.start_datetime)
+print([str(e) for e in events])
