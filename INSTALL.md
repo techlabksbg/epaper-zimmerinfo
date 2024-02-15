@@ -11,12 +11,13 @@ Allgemein:
 
 ### Installation unter Windows:
 ```bash
-pip install icalendar
+pip install icalendar lxml
 ```
 
 ### Installation unter Ubuntu: 
 ```bash
 sudo apt install python3-icalendar
+sudo apt install python3-lxml
 ```
 Man könnte auch pip3 verwenden, was aber unter Umständen zu Konflikten mit dem Paketmanager apt führen kann.
 Eine weitere, saubere Alternative sind virtuelle Python-Environments
