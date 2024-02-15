@@ -10,7 +10,7 @@ import time
 
 if not os.path.exists("mysecrets.py"):
     with open("mysecrets.py", "w") as f:
-        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\nlogin='hans.wurst'\npasswort='123456'\n")
+        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\nlogin='hans.wurst'\npasswort='123456'\n#curl='custompathtocurl'\n")
     raise RuntimeError("Die Datei mysecrets.py wurde angelegt. Bitte bearbeiten Sie die Datei mysecrets.py.")
 
 import mysecrets
@@ -48,6 +48,9 @@ class NesaPilot:
         
         cookieHandling = shlex.split("-L -b nesa-cookies.txt -c nesa-cookies.txt")
         args = args[0:1] + cookieHandling + args[1:]
+        if (hasattr(mysecrets,'curl')):
+            print("Curl ist definiert")
+            args[0] = mysecrets.curl
         if len(replacements)>0:
             args = [self.applyAllReplacements(a, replacements) for a in args]
         
