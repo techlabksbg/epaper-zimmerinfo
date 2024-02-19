@@ -12,12 +12,12 @@ Allgemein:
 
 ### Installation unter Windows:
 ```bash
-pip install icalendar lxml
+pip install icalendar lxml cairosvg
 ```
 
 ### Installation unter Ubuntu: 
 ```bash
-sudo apt install python3-icalendar python3-lxml
+sudo apt install python3-icalendar python3-lxml python3-cairosvg
 ```
 Man könnte auch pip3 verwenden, was aber unter Umständen zu Konflikten mit dem Paketmanager apt führen kann.
 Eine weitere, saubere Alternative sind virtuelle Python-Environments
