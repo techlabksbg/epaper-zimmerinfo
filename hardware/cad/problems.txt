@@ -1,0 +1,11 @@
+Kabelschlitz: zu schmal, Position falsch
+Länge Box beim Wander zu lang
+Wände zu flimsy -> 2mm dicke, mehr vertikal-Verstrebungen
+Box zu niedrig (Batterie-Kontakte sind 19mm hoch)
+Halter Wandler, Redesign (pressfit vom Deckel)
+Batterieverschluss: Gap zu klein (kein Kontakt), Verschluss mit Schraube
+Deckel mit Latches.
+
+evtl. PCB für Spannungsteiler. Pins auf ESP prüfen.
+
+
