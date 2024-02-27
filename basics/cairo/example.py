@@ -1,7 +1,6 @@
-# from https://pycairo.readthedocs.io/en/latest/tutorial/introduction.html#example
-
 #!/usr/bin/env python
 
+# from https://pycairo.readthedocs.io/en/latest/tutorial/introduction.html#example
 import math
 from math import pi
 import cairo
