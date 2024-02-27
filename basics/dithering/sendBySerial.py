@@ -34,7 +34,15 @@ data = getData()
 port = "/dev/ttyACM0"  # getPort()
 print(f"Sending data to port {port}")
 with serial.Serial(port, 115200, timeout=0) as ser:
-    ser.write(data)
+    chunk = 128
+    for i in range(0,96000,chunk):
+        ser.write(data[i:i+chunk])
+        s = ser.read(1000)
+        if len(s)>0:
+            print(s,end='')
+        print(f"\r{i} of {96000}")
+        time.sleep(0.001)
+    #ser.write(data)
     for i in range(3):
         s = ser.read(1000)
         if len(s)>0:
