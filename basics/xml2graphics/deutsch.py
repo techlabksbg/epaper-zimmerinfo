@@ -2,7 +2,7 @@ wochentage = ['Montag', 'Dienstag', 'Mittwoch', "Donnerstag", 'Freitag', 'Samsta
 def wochentag(datum):
     return wochentage[datum.weekday()]
 
-monate = ['', 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'Oktober', 'November', 'Dezember']
+monate = ['', 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 def monat(datum):
     return monate[datum.month]
 
