@@ -1,12 +1,13 @@
 from lxml import etree
 from event import Event
 from week import Week
+from day import Day
 from datetime import date
 
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 
 # https://levelup.gitconnected.com/how-to-properly-calculate-text-size-in-pil-images-17a2cc6f51fd
-def get_text_dimensions(text_string, font):
+def get_text_dimensions(text_string, font) -> list(int):
     # https://stackoverflow.com/a/46220683/9263761
     ascent, descent = font.getmetrics()
 
