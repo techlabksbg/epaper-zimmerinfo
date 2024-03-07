@@ -44,7 +44,7 @@ for time in lesso_times:
 bw.show() 
 sleep(2)
 
-#Draw Lesson Times
+#Draw Days
 font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 draw_point = (52, 11)
 drawbw.multiline_text(draw_point, text="Montag", font=font, fill=0)
