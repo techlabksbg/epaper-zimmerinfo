@@ -72,5 +72,19 @@ drawbw.rounded_rectangle([(43, 40), (240, 72)] , fill ="white", radius=50, outli
 
 drawbw.rounded_rectangle([(43, 76), (240, 146)] , fill ="white", radius=10, outline ="black", width = 1) 
 
+font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
+
+draw_point = (52, 42)
+drawbw.multiline_text(draw_point, text="Test um zu sehen, ob es geht", font=font, fill=0)
+
+draw_point = (52, 58)
+drawbw.multiline_text(draw_point, text="Anderer Versuch", font=font, fill=0)
+
+drawbw.rounded_rectangle([(244, 40), (352, 72)] , fill ="white", radius=7, outline ="black", width = 1) 
+
+draw_point = (246, 42)
+drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
+
+
 bw.save("bw.png", "PNG")
 bw.show() 
