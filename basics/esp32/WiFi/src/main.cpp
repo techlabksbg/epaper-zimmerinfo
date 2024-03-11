@@ -1,6 +1,12 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "secrets.h"
+#include "DEV_Config.h"
+#include "EPD.h"
+#include "GUI_Paint.h"
+#include "ImageData.h"
+#include <stdlib.h>
+
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 #define BATPIN 34
 
