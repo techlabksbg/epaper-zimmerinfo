@@ -15,6 +15,7 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+
 void setup(){
   Serial.begin(115200);
   initWiFi();
