@@ -21,15 +21,26 @@ bw = Image.new("1", (800,480), color=1)
 
 # Draw horizontal lines
 drawbw = ImageDraw.Draw(bw)
+# Wochentage und Stunden Separierer
+drawbw.line([(0, 37), (800, 37)] , fill ="black", width = 2) 
+# Pause Linie
+drawbw.line([(0, 148), (800, 148)] , fill ="black", width = 2) 
+# Mittags Linie
+drawbw.line([(0, 222), (800, 222)] , fill ="black", width = 2) 
+# Mittags Linie 2.0
+drawbw.line([(0, 296), (800, 296)] , fill ="black", width = 2) 
+
+
 for y in range(37, 480, 37):
     shape = [(0, y), (800, y)] 
-    drawbw.line(shape, fill ="black", width = 2) 
+    drawbw.line(shape, fill ="black", width = 1) 
 
 #Draw vertical lines
+# Zeit Separierer
 drawbw.line([(40, 0), (40, 480)] , fill ="black", width = 2) 
 for x in range(242, 800, 112):
     shape = [(x, 0), (x, 480)] 
-    drawbw.line(shape, fill ="black", width = 2) 
+    drawbw.line(shape, fill ="black", width = 1) 
 
 sleep(2)
 
@@ -41,13 +52,13 @@ for time in lesso_times:
     draw_point = (2.4, y)
     drawbw.multiline_text(draw_point, text=time, font=font, fill=0)
     y += 37
-bw.show() 
+# bw.show() 
 sleep(2)
 
 #Draw Days
 font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 draw_point = (52, 11)
-drawbw.multiline_text(draw_point, text="Montag", font=font, fill=0)
+drawbw.multiline_text(draw_point, text="Heute", font=font, fill=0)
 
 x = 257
 days = ["Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
@@ -55,6 +66,11 @@ for day in days:
     draw_point = (x, 11)
     drawbw.multiline_text(draw_point, text=day, font=font, fill=0)
     x += 112
-bw.show() 
-bw.save("bw.png", "PNG")
 
+# Stunde Konzept
+drawbw.rounded_rectangle([(43, 40), (240, 72)] , fill ="white", radius=50, outline ="black", width = 1) 
+
+drawbw.rounded_rectangle([(43, 76), (240, 146)] , fill ="white", radius=10, outline ="black", width = 1) 
+
+bw.save("bw.png", "PNG")
+bw.show() 
