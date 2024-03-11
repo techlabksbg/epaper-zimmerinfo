@@ -1,5 +1,5 @@
 # On Linux: sudo apt install python3-serial
-# On Windows: pip install serial
+# On Windows: pip install pyserial
 
 import serial
 import serial.tools.list_ports
