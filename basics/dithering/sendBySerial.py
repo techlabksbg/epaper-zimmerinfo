@@ -1,7 +1,11 @@
 # On Linux: sudo apt install python3-serial
+<<<<<<< HEAD
 
 # On Windows: pip install serial & pip install pyserial
 
+=======
+# On Windows: pip install pyserial
+>>>>>>> f6fe5aaed5ef65a81dc24adeadf24269cce6681b
 
 import serial
 
