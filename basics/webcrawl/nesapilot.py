@@ -133,7 +133,8 @@ class NesaPilot:
         print(f"--> Liste der Räume: {self.rooms} <--")
         for room in roomlist:
             if not room in self.rooms:  # Does this room even exist?
-                raise f"Raum #{room} ist nicht in der Liste der Räume. Vorhandene Räume:\n{self.rooms.keys}"
+                print(f"Raum {room} ist nicht in der Liste der )Räume. Vorhandene Räume:\n{self.rooms.keys()}")
+                continue
             # Load room page
             print(f"--> Seite für den Raum {room} laden... <--")
             self.execCurl("generic.curl", [["MYURL",self.nav['Raumpläne']+f"&listindex_s={self.rooms[room]}&subFilter="]])
@@ -143,13 +144,13 @@ class NesaPilot:
             print(f"--> XML-Daten für Raum {room} laden... <--")
             xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
             # Save xml-Document
-            datei = f"roomdata/{room}.xml"
+            datei = f"roomdata/{room}.xml".replace("/","_")
             with open(datei, "wb") as f:
                 f.write(html.tostring(xml))
-            print(f"--> Saved plan to {datei} <--")
+            print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
+            time.sleep(3)
 
 
 if __name__== "__main__":
     pilot = NesaPilot()
-    pilot.getRooms(['H21', 'D15', 'E23'], 45)
-
+    pilot.getRooms(pilot.rooms, 45)
