@@ -8,7 +8,7 @@
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
-#define BATPIN 34;
+#define BATPIN 34
 #define MAC WiFi.macAddress()
 
 
@@ -20,6 +20,18 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+//from basics/esp32/batterie_messung
+float batterie_messung() {
+  int bat = 0;
+  for (int i=0; i<100; i++) {
+    bat += analogRead(BATPIN);
+    delay(10);
+  }
+  // 227056 sollte 4.055 V sein
+  // 188410 sollte 3.405 V sein
+  float vbat = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
+  return vbat;
+}
 
 void setup(){
   printf("EPD_7IN5B_V2_test Demo\r\n");
@@ -48,7 +60,9 @@ void setup(){
   delay(10000);
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
+    batterie_messung();
     Paint_SelectImage(BlackImage);
+
     Paint_DrawString_EN(100,150, "keine Verbindung zu"SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,180, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
@@ -64,6 +78,7 @@ void setup(){
 
     Paint_SelectImage(RYImage);
     
+
 
   }
 }
