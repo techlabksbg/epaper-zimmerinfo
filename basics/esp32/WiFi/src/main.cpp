@@ -16,6 +16,18 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+//from basics/esp32/batterie_messung
+float batterie_messung() {
+  int bat = 0;
+  for (int i=0; i<100; i++) {
+    bat += analogRead(BATPIN);
+    delay(10);
+  }
+  // 227056 sollte 4.055 V sein
+  // 188410 sollte 3.405 V sein
+  float vbat = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
+  return vbat;
+}
 
 void setup(){
   Serial.begin(115200);
@@ -37,9 +49,11 @@ void setup(){
   delay(10000);
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
+    batterie_messung();
     Paint_SelectImage(BlackImage);
     Paint_DrawString_EN(10, 20, SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(10, 40, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(10, 60, batterie_messung().c_str(), &Font16, WHITE, BLACK);
   }
 }
 
