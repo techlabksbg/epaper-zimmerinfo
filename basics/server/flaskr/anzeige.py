@@ -2,9 +2,11 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
+from datetime import datetime
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
+from flaskr.misc import times
 from flask import request
 
 bp = Blueprint('anzeige', __name__)
@@ -32,4 +34,13 @@ def index():
     if (roomid != None):
         roomid = roomid[0]
 
-    return render_template('anzeige/index.html', roomid=roomid, macid=macid)
+    current_time = datetime.now()
+    sleep_time = 0
+    for time in times:
+        if (current_time < time):
+            sleep_time = (time - current_time).seconds
+            break
+
+    sleep_time = 120 # for testing purposes
+
+    return render_template('anzeige/index.html', roomid=roomid, macid=macid, sleep_time=sleep_time)
