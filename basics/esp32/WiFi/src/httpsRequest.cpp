@@ -29,7 +29,7 @@ int httpsRequest(String url, char * buffer, int bufLen) {
     Serial.println(location);
     // Make a HTTP request:
     client.print("GET ");
-    client.print(location);
+    client.print(url);
     client.println(" HTTP/1.0");
     client.print("Host: ");
     client.println(server);
