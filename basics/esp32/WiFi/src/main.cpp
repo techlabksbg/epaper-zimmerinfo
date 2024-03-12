@@ -31,6 +31,16 @@ String batterie_messung() {
   return String(vbat);
 }
 
+void antwort(response){
+  int pos = 0;
+  while (pos<response.length()) {
+    int zeilenende = response.indexOf("\n", pos);
+    int keyende = response.indexOf(" ", pos);
+    String key = response.substring(pos, keyende);
+    String value = response.substring(keyende+1, zeilenende);
+    pos = zeilenende+1;
+  }
+}
 void setup(){
   printf("EPD_7IN5B_V2_test Demo\r\n");
   DEV_Module_Init();
@@ -77,12 +87,14 @@ void setup(){
     nocon = 0;
     int len = httpsRequest("epaper.tech-lab.ch", "/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
+<<<<<<< HEAD
     String antwort = String(char*)(BlackImage)
+=======
+    String antwort = String(char*)(BlackImage);
+>>>>>>> e5348b29b2a8ea12cc671923ead7f6d7ffdf8c39
     Serial.println("Displaying graphics");
     EPD_7IN5B_V2_Display(BlackImage, RYImage);
     DEV_Delay_ms(2000);
-
-
   }
 }
 
