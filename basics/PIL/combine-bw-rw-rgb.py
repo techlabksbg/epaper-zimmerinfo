@@ -5,10 +5,6 @@ def combine_bw_rw(bw, rw):
     rgb = Image.new("RGB", rw.size, color=(255,255,255))
     data = np.array(rgb)   # "data" is a height x width x 3 numpy array
     bwdata = np.array(bw)
-    print(bwdata)
-    print(data)
-    print(bwdata.shape)
-    print(data.shape)
     rwdata = np.array(rw)
     data[bwdata==False] = (0,0,0)
     data[rwdata==False] = (255,0,0)
