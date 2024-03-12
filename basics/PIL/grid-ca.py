@@ -127,7 +127,7 @@ drawbw.multiline_text(draw_point, text=".", font=font, fill=0)
 draw_point = (45,4)
 drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
 
-gd.hauptsacheeinrechteck("08:34", "09:19")
+gd.hauptsacheeinrechteck("08:34", "09:19", drawbw)
 
 bw.save("bw.png", "PNG")
 bw.show() 
