@@ -1,10 +1,11 @@
-
 # Ubuntu Linux: sudo apt install python3-pil
 # pip install pil
 
 # from https://stackoverflow.com/questions/68648801/generate-image-from-given-text
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from time import sleep
+from operator import mul
+import grid_data as gd
 
 # https://levelup.gitconnected.com/how-to-properly-calculate-text-size-in-pil-images-17a2cc6f51fd
 def get_text_dimensions(text_string, font):
@@ -126,7 +127,7 @@ drawbw.multiline_text(draw_point, text=".", font=font, fill=0)
 draw_point = (45,4)
 drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
 
-
+gd.hauptsacheeinrechteck("08:34", "09:19")
 
 bw.save("bw.png", "PNG")
 bw.show() 
