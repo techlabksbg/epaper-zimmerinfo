@@ -8,21 +8,24 @@
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 #define BATPIN 34;
-#define MAC WiFi.macAddress();
+#define MAC WiFi.macAddress()
 
 void initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
   Serial.print("Connecting to WiFi ..");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    delay(1000);
-  }
   Serial.println(WiFi.localIP());
 }
 
 
 void setup(){
+  printf("EPD_7IN5B_V2_test Demo\r\n");
+  DEV_Module_Init();
+
+  printf("e-Paper Init and Clear...\r\n");
+  EPD_7IN5B_V2_Init();
+  EPD_7IN5B_V2_Clear();
+  DEV_Delay_ms(500);
   Serial.begin(115200);
   UBYTE *BlackImage, *RYImage;
   UWORD Imagesize = ((EPD_7IN5B_V2_WIDTH % 8 == 0) ? (EPD_7IN5B_V2_WIDTH / 8 ) : (EPD_7IN5B_V2_WIDTH / 8 + 1)) * EPD_7IN5B_V2_HEIGHT;
@@ -43,8 +46,21 @@ void setup(){
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
     Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(10, 20, SSID, &Font12, WHITE, BLACK);
-    Paint_DrawString_EN(10, 20, MAC, &Font12, WHITE, BLACK);
+    Paint_DrawString_EN(100,150, "keine Verbindung zu"SSID, &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,180, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
+    printf("EPD_Display\r\n");
+    EPD_7IN5B_V2_Display(BlackImage, RYImage);
+    DEV_Delay_ms(2000);
+
+  }
+  else {
+    nocon = 0;
+    Paint_SelectImage(BlackImage);
+    
+
+
+    Paint_SelectImage(RYImage);
+    
   }
 }
 
