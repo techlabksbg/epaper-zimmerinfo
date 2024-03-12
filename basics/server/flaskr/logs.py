@@ -16,8 +16,18 @@ def index():
 
     new_macs = []
     for mac in macs:
-        roomname = db.execute('SELECT roomname FROM room WHERE id = ?', (mac['roomid'], )).fetchone()['roomname']
-        battery = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (mac['id'],)).fetchone()['volt']
+        roomname = db.execute('SELECT roomname FROM room WHERE id = ?', (mac['roomid'], )).fetchone()
+        if (roomname == None):
+            roomname = "No room name available yet"
+        else:
+            roomname = roomname['roomname']
+
+        battery = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (mac['id'],)).fetchone()
+        if (battery == None):
+            battery = "No Battery Information available yet"
+        else:
+            battery = battery['volt']
+
         new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery})
 
     return render_template('logs/index.html', macs=new_macs)
@@ -28,4 +38,41 @@ def log(id):
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
 
     return render_template('logs/log.html', volts=volts)
+
+@bp.route('/create', methods=('GET', 'POST'))
+@login_required
+def create():
+    if request.method == 'POST':
+        mac = request.form['mac']
+        roomname = request.form['roomname']
+        error = None
+
+        if not mac:
+            error = 'MAC-Address required.'
+        if not roomname:
+            error = 'room name required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+
+            roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
+            if (roomid == None):
+                db.execute('INSERT INTO room (roomname) VALUES (?)', (roomname, ))
+                db.commit()
+                roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
+            roomid = roomid[0]
+
+            macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()
+            if (macid == None):
+                db.execute('INSERT INTO mac (roomid, mac) VALUES (?, ?)', (roomid, mac))
+                db.commit()
+            else:
+                db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
+                db.commit()
+
+            return redirect(url_for('logs.index'))
+
+    return render_template('logs/create.html')
 
