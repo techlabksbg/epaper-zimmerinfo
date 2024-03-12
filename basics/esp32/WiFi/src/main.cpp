@@ -10,7 +10,7 @@
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
-#define BATPIN 34;
+#define BATPIN 34
 void initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
@@ -75,12 +75,11 @@ void setup(){
   else {
     String Mac = WiFi.macAddress();
     nocon = 0;
-    httpsRequest("ofi.tech-lab.ch", "/ef05a/data.bin", (char *)BlackImage, Imagesize*2);
+    httpsRequest("epaper.tech-lab.ch", "/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
+    
     Serial.println("Displaying graphics");
     EPD_7IN5B_V2_Display(BlackImage, RYImage);
     DEV_Delay_ms(2000);
-
-   
 
 
   }
