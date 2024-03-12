@@ -39,8 +39,11 @@ void antwort(response){
     String key = response.substring(pos, keyende);
     String value = response.substring(keyende+1, zeilenende);
     pos = zeilenende+1;
-    if key == sleep{
+    if (key == "sleep"){
       sleep(value)
+    if (key == "bild"){
+      httpsRequest()
+    }
     }
   }
 }
