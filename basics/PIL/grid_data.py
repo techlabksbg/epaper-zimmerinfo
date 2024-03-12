@@ -49,44 +49,6 @@ def draw_reservation_at_lessontime_Today(starttime, teacher):
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 def draw_reservation_at_lessontime(starttime, teacher):
-<<<<<<< HEAD
-    if time == "7:40":
-        draw_point = (x, 51)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "8:25":
-        draw_point = (x, 88)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "9:34":
-        draw_point = (x, 125)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "10:30":
-        draw_point = (x, 162)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "11:15":
-        draw_point = (x, 199)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "12:14":
-        draw_point = (x, 236)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:04":
-        draw_point = (x, 273)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:55":
-        draw_point = (x, 310)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "14:49":
-        draw_point = (x, 347)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "15:43":
-        draw_point = (x, 384)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "16:33":
-        draw_point = (x, 421)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "17:23":
-        draw_point = (x, 458)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-=======
     draw_point = (52, AnfangszeitenKSBG[time])
     drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
     draw_point = (52, AnfangszeitenKSBG[time]+14)
@@ -103,4 +65,3 @@ def draw_reservation(starttime, teacher_short):
     drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
     draw_point = (52, AnfangszeitenKSBG[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
->>>>>>> d470fc9360f886bd11812742d01b7e88585ee357
