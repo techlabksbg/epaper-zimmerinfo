@@ -2,9 +2,9 @@
 
 {% block header %}
   <h1>{% block title %}Displays{% endblock %}</h1>
-  <!--{% if g.user %}
-    <a class="action" href="{{ url_for('anzeige.create') }}">New</a>
-  {% endif %}-->
+  {% if g.user %}
+    <a class="action" href="{{ url_for('logs.create') }}">New</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}

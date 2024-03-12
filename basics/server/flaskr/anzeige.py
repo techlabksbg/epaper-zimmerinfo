@@ -22,28 +22,16 @@ def index():
     print(macid)
 
     if (macid == None):
-        # TODO get room
-        room = "H21"+str(mac)
-        db.execute('INSERT INTO room (roomname) VALUES (?)', (room, ))
-        roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (room, )).fetchone()[0]
-
-        print(roomid, mac)
-        db.execute('INSERT INTO mac (mac, roomid) VALUES (?, ?)',
-        (mac, roomid))
+        db.execute('INSERT INTO mac (mac) VALUES (?)',
+        (mac, ))
         db.commit()
 
         macid = db.execute(
         'SELECT id FROM mac WHERE mac = ?',(mac,)
         ).fetchone()
-
+        
     macid = macid[0]
-    
     db.execute('INSERT INTO volt (volt, macid) VALUES (?, ?)', (volt, macid))
     db.commit()
 
-    #displays = db.execute('SELECT id, mac, volt FROM displays').fetchall()
-    #for row in displays:
-    #    print(row[:])
-    #    print(row["volt"])
-    #    print()
     return redirect(url_for('logs.index'))
