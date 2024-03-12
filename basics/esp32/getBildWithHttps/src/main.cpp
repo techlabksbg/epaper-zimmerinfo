@@ -51,7 +51,7 @@ void setup(){
     Paint_DrawString_EN(10, 20, SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(10, 40, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
   }
-  httpsRequest("ofi.tech-lab.ch", "/ef05a/data.bin", (char *)BlackImage, Imagesize*2);
+  httpsRequest("https://ofi.tech-lab.ch/ef05a/data.bin", (char *)BlackImage, Imagesize*2);
   Serial.println("Displaying graphics");
   EPD_7IN5B_V2_Display(BlackImage, RYImage);
   DEV_Delay_ms(2000);
