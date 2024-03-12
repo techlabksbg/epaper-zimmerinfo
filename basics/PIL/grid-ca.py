@@ -120,6 +120,12 @@ drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
 draw_point = (246, 58)
 drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
 
+draw_point = (2,2)
+drawbw.multiline_text(draw_point, text=".", font=font, fill=0)
+
+draw_point = (45,4)
+drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
+
 
 
 bw.save("bw.png", "PNG")
