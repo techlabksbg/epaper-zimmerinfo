@@ -7,8 +7,11 @@
 #include <stdlib.h>
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
+
 #define BATPIN 34;
 #define MAC WiFi.macAddress()
+
+
 
 void initWiFi() {
   WiFi.mode(WIFI_STA);
@@ -61,6 +64,7 @@ void setup(){
 
     Paint_SelectImage(RYImage);
     
+
   }
 }
 
