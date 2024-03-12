@@ -43,6 +43,8 @@ def log(id):
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
 
     mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
+    if (mac == None):
+        return redirect(url_for('logs.index'))
     roomid = mac['roomid']
     mac = mac['mac']
 
