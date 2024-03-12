@@ -58,14 +58,16 @@ void setup(){
   delay(10000);
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
+    String MAC = "MAC: " + String(WiFi.macAddress());
+    String battery = "Batteriespannung: " + batterie_messung() + "V";
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
     Paint_SelectImage(RYImage);
     Paint_Clear(WHITE);
     Paint_SelectImage(BlackImage);
     Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,180, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,210, batterie_messung().c_str(), &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
     EPD_7IN5B_V2_Display(BlackImage,RYImage);
   }
