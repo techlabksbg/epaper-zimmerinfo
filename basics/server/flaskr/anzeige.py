@@ -19,19 +19,19 @@ def index():
     macid = db.execute(
         'SELECT id FROM mac WHERE mac = ?',(mac,)
     ).fetchone()
-    print(macid)
 
     if (macid == None):
-        db.execute('INSERT INTO mac (mac) VALUES (?)',
-        (mac, ))
+        db.execute('INSERT INTO mac (mac) VALUES (?)', (mac, ))
         db.commit()
 
-        macid = db.execute(
-        'SELECT id FROM mac WHERE mac = ?',(mac,)
-        ).fetchone()
+        macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
         
     macid = macid[0]
     db.execute('INSERT INTO volt (volt, macid) VALUES (?, ?)', (volt, macid))
     db.commit()
 
-    return redirect(url_for('logs.index'))
+    roomid = db.execute('SELECT roomid FROM mac WHERE id = ?', (macid,)).fetchone()
+    if (roomid != None):
+        roomid = roomid[0]
+
+    return render_template('anzeige/index.html', roomid=roomid, macid=macid)
