@@ -98,15 +98,6 @@ void setup(){
     nocon = 0;
     int len = httpsRequest("epaper.tech-lab.ch", "/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    String antwort = String(char*)(BlackImage)
-=======
-    String antwort = String(char*)(BlackImage);
->>>>>>> e5348b29b2a8ea12cc671923ead7f6d7ffdf8c39
-=======
-    String response = String(char*)(BlackImage);
->>>>>>> origin/esp32fb
     Serial.println("Displaying graphics");
     EPD_7IN5B_V2_Display(BlackImage, RYImage);
     DEV_Delay_ms(2000);
