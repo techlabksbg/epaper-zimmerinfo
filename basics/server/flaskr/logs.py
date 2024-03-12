@@ -7,6 +7,8 @@ from flaskr.auth import login_required
 from flaskr.db import get_db
 from flask import request
 
+import os
+
 bp = Blueprint('logs', __name__)
 
 @bp.route('/')
@@ -63,7 +65,10 @@ def create():
             if (roomid == None):
                 db.execute('INSERT INTO room (roomname) VALUES (?)', (roomname, ))
                 db.commit()
+
                 roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
+                os.makedirs(f"flaskr/static/rooms/{roomid[0]}")
+
             roomid = roomid[0]
 
             mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
@@ -76,6 +81,9 @@ def create():
             if (macid == None):
                 db.execute('INSERT INTO mac (roomid, mac) VALUES (?, ?)', (roomid, mac))
                 db.commit()
+
+                macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()[0]
+                os.makedirs(f"flaskr/static/macs/{macid}")
             else:
                 db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
                 db.commit()

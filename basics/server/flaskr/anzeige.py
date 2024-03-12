@@ -49,6 +49,7 @@ def index():
         db.commit()
 
         macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
+        os.makedirs(f"flaskr/static/macs/{macid[0]}")
         
     macid = macid[0]
     db.execute('INSERT INTO volt (volt, macid) VALUES (?, ?)', (volt, macid))
