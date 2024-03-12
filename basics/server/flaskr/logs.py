@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
+from flaskr.plotting import plot_voltage
 from flask import request
 
 import os
@@ -51,7 +52,7 @@ def log(id):
     else:
         room = room[0]
 
-    return render_template('logs/log.html', volts=volts, mac=mac, room=room)
+    return render_template('logs/log.html', volts=volts, mac=mac, room=room, id=str(id))
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -94,6 +95,8 @@ def create():
 
                 macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()[0]
                 os.makedirs(f"flaskr/static/macs/{macid}")
+
+                plot_voltage(f"flaskr/static/macs/{macid}", macid, mac)
             else:
                 db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
                 db.commit()
