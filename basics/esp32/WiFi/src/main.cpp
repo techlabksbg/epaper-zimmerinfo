@@ -59,11 +59,15 @@ void setup(){
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
     Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(100,150, "keine Verbindung zu "SSID, &Font16, WHITE, BLACK);
+    Paint_Clear(WHITE);
+    Paint_SelectImage(RYImage);
+    Paint_Clear(WHITE);
+    Paint_SelectImage(BlackImage);
+    Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,180, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,210, batterie_messung().c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
-    EPD_7IN5B_V2_Display(BlackImage, RYImage);
+    EPD_7IN5B_V2_Display(BlackImage,RYImage);
   }
   else {
     nocon = 0;
