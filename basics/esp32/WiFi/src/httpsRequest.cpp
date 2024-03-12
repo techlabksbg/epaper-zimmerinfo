@@ -51,7 +51,8 @@ int httpsRequest(String url, char * buffer, int bufLen) {
     }
     // if there are incoming bytes available
     // from the server, read them and print them:
-    
+
+    unsigned int start = millis(); 
     int timeout = 5000;
     int bytesRead = 0;
     for (char * ptr = buffer; ptr<buffer+bufLen && ptr<buffer+contentLength; ptr++) {
@@ -60,7 +61,7 @@ int httpsRequest(String url, char * buffer, int bufLen) {
             delay(1);
             tm--;
         }
-        if (tm<=0) {
+        if (tm<=0 || millis()-start>20000) {
             return ptr-buffer;
         }
         *ptr = client.read();

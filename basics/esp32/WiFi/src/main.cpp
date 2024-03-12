@@ -12,6 +12,7 @@ RTC_DATA_ATTR int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
 void goToSleep(long long time);
+void errorScreen(String fehler, UBYTE *BlackImage, int ScreenSize);
 
 #define BATPIN 34
 void initWiFi() {
@@ -61,10 +62,14 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
         value = String("https://epaper.tech-lab.ch/")+value;
       }
       int len = httpsRequest(value,(char*)BlackImage, ImageSize*2);
-      //hier kann WiFI abgeschaltet werden
-      Serial.println("Displaying graphics");
-      EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
-      DEV_Delay_ms(2000);
+      if (len!=ImageSize*2) {
+        errorScreen(String("https-Request has only size ")+String(len), BlackImage, ImageSize);
+      } else {
+        //hier kann WiFI abgeschaltet werden
+        Serial.println("Displaying graphics");
+        EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
+        DEV_Delay_ms(2000);
+      }
     }
   }
 }
@@ -73,6 +78,20 @@ void goToSleep(long long time){
   Serial.printf("Going deepsleep for %d seconds", time);
   esp_sleep_enable_timer_wakeup(time*1000000ULL);
   esp_deep_sleep_start();
+}
+
+void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
+    nocon = nocon+1;
+    String MAC = "MAC: " + String(WiFi.macAddress());
+    String battery = "Batteriespannung: " + batterie_messung() + "V";
+    Paint_SelectImage(BlackImage);
+    Paint_DrawString_EN(100,100, fehler.c_str(), &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
+    printf("EPD_Display\r\n");
+    EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
+    goToSleep(1<<nocon);
 }
 
 void setup(){
@@ -98,33 +117,17 @@ void setup(){
 
   initWiFi();
   if (WiFi.status() !=WL_CONNECTED) {
-
-
-    nocon = nocon+1;
-    String MAC = "MAC: " + String(WiFi.macAddress());
-    String battery = "Batteriespannung: " + batterie_messung() + "V";
-    Paint_SelectImage(BlackImage);
-    Paint_SelectImage(RYImage);
-    Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
-    printf("EPD_Display\r\n");
-    EPD_7IN5B_V2_Display(BlackImage,RYImage);
-    goToSleep(1<<nocon);
-    }
-
-  else {
+    errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
+    goToSleep(60*(1<<nocon));
+  } else {
     String mac = WiFi.macAddress();
     nocon = 0;
     int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung(), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     antwort(response, BlackImage, Imagesize);
-    /*Serial.println("Displaying graphics");
-    EPD_7IN5B_V2_Display(BlackImage, RYImage);
-    DEV_Delay_ms(2000); */
   }
+  goToSleep(120);
 }
 
 void loop(){}
