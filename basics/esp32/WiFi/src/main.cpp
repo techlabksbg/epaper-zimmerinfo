@@ -41,9 +41,13 @@ void antwort(response){
     pos = zeilenende+1;
     if (key == "sleep"){
       sleep(value)
-    if (key == "bild"){
-      httpsRequest()
     }
+    if (key == "bild"){
+      httpsRequest(value,(char*)BlackImage,Imagesize*2);
+      //hier kann WiFI abgeschaltet werden
+      Serial.println("Displaying graphics");
+      EPD_7IN5B_V2_Display(BlackImage, RYImage);
+      DEV_Delay_ms(2000);
     }
   }
 }
@@ -96,7 +100,7 @@ void setup(){
   else {
     String Mac = WiFi.macAddress();
     nocon = 0;
-    int len = httpsRequest("epaper.tech-lab.ch", "/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
+    int len = httpsRequest("epaper.tech-lab.ch/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String(char*)(BlackImage);
     Serial.println("Displaying graphics");

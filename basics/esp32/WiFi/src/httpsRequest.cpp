@@ -5,18 +5,28 @@
 // From https://randomnerdtutorials.com/esp32-https-requests/
 
 // server is epaper.tech-lab.ch
-// url is for instance /anszeige?mac=asdf?volt=3.83
+// url is for instance /anzeige?mac=asdf?volt=3.83
 // buffer is memory to write response body to
 // bufLen is the maximal length of accepted response.
-int httpsRequest(String server, String location, char * buffer, int bufLen) {
+int httpsRequest(String url, char * buffer, int bufLen) {
+    if (!url.startsWith("https://")) {
+        Serial.println("URL must start with https://");
+        return -1;
+    }
+    int servEnd = url.indexOf("/",8);
+    String server = url.substring(8,servEnd);
+    String location = url.substring(servEnd);
     WiFiClientSecure client;
     client.setCACert(test_root_ca);
-    Serial.println("\nStarting connection to server...");
+    Serial.print("\nStarting connection to server ");
+    Serial.println(server);
     if (!client.connect(server.c_str(), 443)) {
         Serial.println("Connection failed!");
         return -1;
     }
     Serial.println("Connected to server!");
+    Serial.print("Acessing location ");
+    Serial.println(location);
     // Make a HTTP request:
     client.print("GET ");
     client.print(location);
