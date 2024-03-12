@@ -13,7 +13,11 @@
       <header>
         <div>
           <h1>Room: {{ mac["roomname"] }}, MAC-Address: {{ mac['macname'] }}</h1>
-          <div class="battery">Battery: {{ mac["battery"] }}<div>
+          {%if not mac["battery"] == None%}
+            <div class="battery">Battery: {{ mac["battery"] }}<div>
+          {% else %}
+            <div class="battery">Battery: No Data<div>
+          {% endif %}
         </div>
         <a class="action" href="{{ url_for('logs.log', id=mac['macid']) }}">More Battery Information</a>
       </header>
