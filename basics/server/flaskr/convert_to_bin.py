@@ -1,11 +1,7 @@
-import sqlite3
-from PIL import Image, ImageDraw
 import cv2
 import numpy as np
 import math
 import os
-
-########## EINIGES KOPIERT von ../dithering/dither.py ######################
 
 def readAndConvertRGB(file):
     return cv2.imread(file)/255  # Conversion to float in 0..1
@@ -61,7 +57,7 @@ def convert_to_bin(path):
         c = filter(img)
         b, r = toBinaryRB(0, 0, c)
         datei = os.path.splitext(datei)[0]
-        with open(datei + ".bin", "wb") as f:
+        with open(path+"/data.bin", "wb") as f:
             f.write(b)
             f.write(r)
 
