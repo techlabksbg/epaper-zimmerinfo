@@ -38,8 +38,8 @@ void setup(){
   if (WiFi.status() !=WL_CONNECTED) {
     nocon = nocon+1;
     Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(10, 20, SSID, &Font12, WHITE, BLACK);
-    Paint_DrawString_EN(10, 40, WiFi.macAddress().c_str(), &Font12, WHITE, BLACK);
+    Paint_DrawString_EN(10, 20, SSID, &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(10, 40, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
   }
 }
 
