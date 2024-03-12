@@ -1,0 +1,3 @@
+update {% if False %}static/firmware/version.bin{%endif%}
+bild {% if roomid == None %}static/macs/{{macid}}/data.bin{% else %}static/rooms/{{roomid}}/data.bin{% endif %}
+sleep 120

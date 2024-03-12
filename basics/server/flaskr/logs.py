@@ -12,10 +12,12 @@ bp = Blueprint('logs', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    macs = db.execute('SELECT id, roomid FROM mac').fetchall()
+    macs = db.execute('SELECT id, roomid, mac FROM mac').fetchall()
 
     new_macs = []
     for mac in macs:
+        macname = mac['mac']
+
         roomname = db.execute('SELECT roomname FROM room WHERE id = ?', (mac['roomid'], )).fetchone()
         if (roomname == None):
             roomname = "No room name available yet"
@@ -28,7 +30,7 @@ def index():
         else:
             battery = battery['volt']
 
-        new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery})
+        new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery, 'macname':macname})
 
     return render_template('logs/index.html', macs=new_macs)
 
@@ -63,6 +65,12 @@ def create():
                 db.commit()
                 roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
             roomid = roomid[0]
+
+            mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
+            if (mac_for_room != None):
+                error = 'Room already has mac ' + str(mac_for_room[0]) + ' assigned to it.'
+                flash(error)
+                return render_template('logs/create.html')
 
             macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()
             if (macid == None):
