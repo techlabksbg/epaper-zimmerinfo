@@ -44,22 +44,17 @@ def koordinatenfinder(timein):
     if timein in AnfangszeitenKSBG:
         return AnfangszeitenKSBG[timein]
 
-#     for time in AnfangszeitenKSBG.keys():
-#         x = minutenrechner(timein)
-#         y = minutenrechner(AnfangszeitenKSBG.keys())
-#         if x == y:
-#             return y[x]
-#             break
-#         # else 
+font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 
-def hauptsacheeinrechteck(timea, timeb):
+def hauptsacheeinrechteck(timea, timeb, drawbw):
         #img = Image.new("RGB", (800,480), color=(255,255,255))
-    bw = Image.new("1", (800,480), color=1)
 
     #font = ImageFont.truetype("../pixelperfect/Minimal5x7.ttf", size=32)
-    drawbw = ImageDraw.Draw(bw)
-    drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
-    bw.show()
+    # drawbw = ImageDraw.Draw(bw)
+    draw_point = (45,koordinatenfinder("07:40"))
+    drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
+    # drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
+    
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
