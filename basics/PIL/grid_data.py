@@ -51,7 +51,6 @@ def draw_reservation_at_lessontime_Today(starttime, teacher, time):
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 def draw_reservation_at_lessontime(starttime, teacher, time, day):
-<<<<<<< HEAD
     if time == "7:40":
         draw_point = (x, 51)
         drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
