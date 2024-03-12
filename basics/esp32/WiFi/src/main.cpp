@@ -6,11 +6,11 @@
 #include "GUI_Paint.h"
 #include <stdlib.h>
 #include <string>
+#include "httpsRequest.h"
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
-#define BATPIN 34
-
+#define BATPIN 34;
 void initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
@@ -42,14 +42,12 @@ void setup(){
   Serial.begin(115200);
   UBYTE *BlackImage, *RYImage;
   UWORD Imagesize = ((EPD_7IN5B_V2_WIDTH % 8 == 0) ? (EPD_7IN5B_V2_WIDTH / 8 ) : (EPD_7IN5B_V2_WIDTH / 8 + 1)) * EPD_7IN5B_V2_HEIGHT;
-  if ((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
+  if ((BlackImage = (UBYTE *)malloc(Imagesize*2)) == NULL) {
     printf("Failed to apply for black memory...\r\n");
     while(1);
   }
-  if ((RYImage = (UBYTE *)malloc(Imagesize)) == NULL) {
-    printf("Failed to apply for red memory...\r\n");
-    while(1);
-  }
+  RYImage=BlackImage+Imagesize;
+  
   printf("NewImage:BlackImage and RYImage\r\n");
   Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
   Paint_NewImage(RYImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
@@ -63,28 +61,26 @@ void setup(){
     String MAC = "MAC: " + String(WiFi.macAddress());
     String battery = "Batteriespannung: " + batterie_messung() + "V";
     Paint_SelectImage(BlackImage);
-    Paint_Clear(WHITE);
     Paint_SelectImage(RYImage);
-    Paint_Clear(WHITE);
     Paint_SelectImage(BlackImage);
     Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
     EPD_7IN5B_V2_Display(BlackImage,RYImage);
-    esp_sleep_enable_timer_wakeup(60000*2^nocon);
+    esp_sleep_enable_timer_wakeup(60000000*2^nocon);
     esp_deep_sleep_start();
     }
+
   else {
+    String Mac = WiFi.macAddress();
     nocon = 0;
-    
+    httpsRequest("ofi.tech-lab.ch", "/ef05a/data.bin", (char *)BlackImage, Imagesize*2);
+    Serial.println("Displaying graphics");
+    EPD_7IN5B_V2_Display(BlackImage, RYImage);
+    DEV_Delay_ms(2000);
 
-    Paint_SelectImage(BlackImage);
-    
-
-
-    Paint_SelectImage(RYImage);
-    
+   
 
 
   }
