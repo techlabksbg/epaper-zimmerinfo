@@ -82,24 +82,28 @@ def hauptsacheeinrechteck(timea, timeb, drawbw):
 def position_box(starttime, endtime):
     starttime_minute = minutenrechner(starttime)
     endtime_minute = minutenrechner(endtime)
-    for time in enumerate(lesson_pixel):
-        if lesson_pixel[time][0]<starttime_minute:
+    for time in (lesson_pixel):
+        #print(time)
+        index = lesson_pixel.index(time)
+        #print(index)
+        #print(lesson_pixel[index])
+        if lesson_pixel[index][0]<starttime_minute:
             pass
         else:
-
-            timedifference = starttime_minute-lesson_pixel[time-1][0]
+            timedifference = lesson_pixel[index-1][0]-starttime_minute
             pixeloffset = int(timedifference*0.644444)
-            start_pixel = lesson_pixel[time-1][1]
+            start_pixel = lesson_pixel[index-1][1] + pixeloffset
 
         
     for time in enumerate(lesson_pixel):
-        if lesson_pixel[time][0]<endtime_minute:
+        if lesson_pixel[index][0] < endtime_minute:
             pass
         else:
-            timedifference = endtime_minute-lesson_pixel[time-1][0]
+            timedifference = lesson_pixel[index-1][0]-endtime_minute
             pixeloffset = int(timedifference*0.644444)
-            end_pixel = lesson_pixel[time-1][1] + pixeloffset
-    print(start_pixel, end_pixel)
+            print(pixeloffset)
+            end_pixel = lesson_pixel[index-1][1] + pixeloffset
+    print("Startpixel,", start_pixel, end_pixel)
 position_box("07:47:00", "08:45:00")
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
