@@ -22,172 +22,111 @@ bw = Image.new("1", (800,480), color=1)
 # Draw horizontal lines
 drawbw = ImageDraw.Draw(bw)
 # Wochentage und Stunden Separierer
-drawbw.line([(0, 37), (800, 37)] , fill ="black", width = 2) 
+drawbw.line([(0, 45), (800, 45)] , fill ="black", width = 2) 
 # Pause Linie
-drawbw.line([(0, 148), (800, 148)] , fill ="black", width = 2) 
+drawbw.line([(0, 132), (800, 132)] , fill ="black", width = 2) 
 # Mittags Linie
-drawbw.line([(0, 222), (800, 222)] , fill ="black", width = 2) 
+drawbw.line([(0, 190), (800, 190)] , fill ="black", width = 2) 
 # Mittags Linie 2.0
-drawbw.line([(0, 296), (800, 296)] , fill ="black", width = 2) 
+drawbw.line([(0, 248), (800, 248)] , fill ="black", width = 2) 
+# Über Wochentage Linie
+drawbw.line([(0, 22), (800, 22)] , fill ="black", width = 2) 
 
+# AnfangszeitenKSBG = [
+#     1 : "07:40",
+#     2 : "08:34",
+#     3 : "09.28",
+#     4 : "10:30",
+#     5 : "11:24",
+#     6 : "12:14",
+#     7 : "13:04",
+#     8 : "13:55",
+#     9 : "14:49",
+#     10 : "15:43",
+#     11 : "16:33",
+#     12 : "17:23",
+#     # Ab hier Normale ISME-Zeiten Mittwoch
+#     13 : "18:15",
+#     14 : "19:05",
+#     15 : "19:55"
+# ]
 
-for y in range(37, 480, 37):
+# AnfangszeitenISME = [
+#     1 = "07:45",
+#     2 = "08:40",
+#     3 = "09:35",
+#     4 = "10:40",
+#     5 = "11:35",
+#     6 = "12:25",
+#     7 = "13:15",
+#     8 = "14:05",
+#     9 = "14:55"
+# ]
+
+for y in range(45, 480, 29):
     shape = [(0, y), (800, y)] 
     drawbw.line(shape, fill ="black", width = 1) 
 
 #Draw vertical lines
 # Zeit Separierer
-drawbw.line([(40, 0), (40, 480)] , fill ="black", width = 2) 
+drawbw.line([(40, 22), (40, 480)] , fill ="black", width = 2) 
 for x in range(242, 800, 112):
-    shape = [(x, 0), (x, 480)] 
+    shape = [(x, 22), (x, 480)] 
     drawbw.line(shape, fill ="black", width = 1) 
 
 sleep(2)
 
 #Draw Lesson Times
 font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
-y = 51
+y = 52
 lesso_times = ["7:40", "8:34", "9:28", "10:30", "11:15", "12:14", "13:04", "13:55", "14:49", "15:43", "16:33", "17:23"]
 for time in lesso_times:
     draw_point = (2.4, y)
     drawbw.multiline_text(draw_point, text=time, font=font, fill=0)
-    y += 37
+    y += 29
 # bw.show() 
 sleep(2)
 
 #Draw Days
 font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
-draw_point = (52, 11)
+draw_point = (52, 27)
 drawbw.multiline_text(draw_point, text="Heute", font=font, fill=0)
 
 x = 257
 days = ["Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
 for day in days:
-    draw_point = (x, 11)
+    draw_point = (x, 27)
     drawbw.multiline_text(draw_point, text=day, font=font, fill=0)
     x += 112
 
-<<<<<<< HEAD
-def draw_lesson(day, time, subject, Class, teacher): #day defines the starting day in int (2-7)
-    x = day*112+145
-    if time == "7:40":
-        info = subject + Class + teacher
-        draw_point = (x, 51)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "8:25":
-        info = subject + Class + teacher
-        draw_point = (x, 88)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "9:34":
-        info = subject + Class + teacher
-        draw_point = (x, 125)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "10:30":
-        info = subject + Class + teacher
-        draw_point = (x, 162)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "11:15":
-        info = subject + Class + teacher
-        draw_point = (x, 199)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "12:14":
-        info = subject + Class + teacher
-        draw_point = (x, 236)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:04":
-        info = subject + Class + teacher
-        draw_point = (x, 273)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:55":
-        info = subject + Class + teacher
-        draw_point = (x, 310)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "14:49":
-        info = subject + Class + teacher
-        draw_point = (x, 347)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "15:43":
-        info = subject + Class + teacher
-        draw_point = (x, 384)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "16:33":
-        info = subject + Class + teacher
-        draw_point = (x, 421)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "17:23":
-        info = subject + Class + teacher
-        draw_point = (x, 458)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-
-def draw_lesson_today(time, subject, Class, teacher): 
-    if time == "7:40":
-        info = subject + Class + teacher
-        draw_point = (52, 51)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "8:25":
-        info = subject + Class + teacher
-        draw_point = (52, 88)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "9:34":
-        info = subject + Class + teacher
-        draw_point = (52, 125)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "10:30":
-        info = subject + Class + teacher
-        draw_point = (52, 162)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "11:15":
-        info = subject + Class + teacher
-        draw_point = (52, 199)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "12:14":
-        info = subject + Class + teacher
-        draw_point = (52, 236)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:04":
-        info = subject + Class + teacher
-        draw_point = (52, 273)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "13:55":
-        info = subject + Class + teacher
-        draw_point = (52, 310)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "14:49":
-        info = subject + Class + teacher
-        draw_point = (52, 347)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "15:43":
-        info = subject + Class + teacher
-        draw_point = (52, 384)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "16:33":
-        info = subject + Class + teacher
-        draw_point = (52, 421)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    if time == "17:23":
-        info = subject + Class + teacher
-        draw_point = (52, 458)
-        drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-=======
 # Stunde Konzept
-drawbw.rounded_rectangle([(43, 40), (240, 72)] , fill ="white", radius=50, outline ="black", width = 1) 
+# drawbw.rounded_rectangle([(43, 40), (240, 72)] , fill ="white", radius=50, outline ="black", width = 1) 
 
 drawbw.rounded_rectangle([(43, 76), (240, 146)] , fill ="white", radius=10, outline ="black", width = 1) 
 
 font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 
-draw_point = (52, 42)
+draw_point = (52, 46)
 drawbw.multiline_text(draw_point, text="Test um zu sehen, ob es geht", font=font, fill=0)
 
-draw_point = (52, 58)
+draw_point = (52, 60)
 drawbw.multiline_text(draw_point, text="Anderer Versuch", font=font, fill=0)
 
-drawbw.rounded_rectangle([(244, 40), (352, 72)] , fill ="white", radius=7, outline ="black", width = 1) 
+drawbw.rounded_rectangle([(244, 48), (352, 72)] , fill ="white", radius=7, outline ="black", width = 1) 
 
-draw_point = (246, 42)
+draw_point = (246, 48)
 drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
+
+draw_point = (246, 58)
+drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
+
+draw_point = (2,2)
+drawbw.multiline_text(draw_point, text=".", font=font, fill=0)
+
+draw_point = (45,4)
+drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
+
 
 
 bw.save("bw.png", "PNG")
 bw.show() 
->>>>>>> refs/remotes/origin/main
