@@ -79,6 +79,29 @@ def hauptsacheeinrechteck(timea, timeb, drawbw):
     # drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
     
 
+def position_box(starttime, endtime):
+    starttime_minute = minutenrechner(starttime)
+    endtime_minute = minutenrechner(endtime)
+    for time in enumerate(lesson_pixel):
+        if lesson_pixel[time][0]<starttime_minute:
+            pass
+        else:
+
+            timedifference = starttime_minute-lesson_pixel[time-1][0]
+            pixeloffset = int(timedifference*0.644444)
+            start_pixel = lesson_pixel[time-1][1]
+
+        
+    for time in enumerate(lesson_pixel):
+        if lesson_pixel[time][0]<endtime_minute:
+            pass
+        else:
+            timedifference = endtime_minute-lesson_pixel[time-1][0]
+            pixeloffset = int(timedifference*0.644444)
+            end_pixel = lesson_pixel[time-1][1] + pixeloffset
+    print(start_pixel, end_pixel)
+position_box("07:47:00", "08:45:00")
+
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
     draw_point = (Wochentage[day], AnfangszeitenKSBG[time])
