@@ -7,17 +7,12 @@
 #include <stdlib.h>
 int nocon=0;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
-#define BATPIN 34;
-#define MAC WiFi.macAddress();
+#define BATPIN 34
 
 void initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
   Serial.print("Connecting to WiFi ..");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    delay(1000);
-  }
   Serial.println(WiFi.localIP());
 }
 
@@ -44,7 +39,7 @@ void setup(){
     nocon = nocon+1;
     Paint_SelectImage(BlackImage);
     Paint_DrawString_EN(10, 20, SSID, &Font12, WHITE, BLACK);
-    Paint_DrawString_EN(10, 20, MAC, &Font12, WHITE, BLACK);
+    Paint_DrawString_EN(10, 40, WiFi.macAddress().c_str(), &Font12, WHITE, BLACK);
   }
 }
 

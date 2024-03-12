@@ -1,23 +1,23 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include "secrets.h"
+
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 #define BATPIN 34
 
-void initWiFi() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(SSID, PASSWD);
-  Serial.print("Connecting to WiFi ..");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    delay(1000);
-  }
-  Serial.println(WiFi.localIP());
-}
-
-void setup(){
+void setup() {
   Serial.begin(115200);
-  initWiFi();
+  
 }
 
-void loop(){}
+void loop() {
+  int bat = 0;
+  for (int i=0; i<100; i++) {
+    bat += analogRead(BATPIN);
+    delay(10);
+  }
+  // 227056 sollte 4.055 V sein
+  // 188410 sollte 3.405 V sein
+  float vbat = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
+  Serial.printf("%d -> %.2f V\n", bat, vbat);
+  delay(1000);
+  
+}
