@@ -59,19 +59,24 @@ void setup(){
   initWiFi();
   delay(10000);
   if (WiFi.status() !=WL_CONNECTED) {
-    nocon = nocon+1;
+    if (nocon <= 4) {
+      nocon = nocon+1;
+    }
     batterie_messung();
     Paint_SelectImage(BlackImage);
 
-    Paint_DrawString_EN(100,150, "keine Verbindung zu"SSID, &Font16, WHITE, BLACK);
+    Paint_DrawString_EN(100,150,"keine Verbindung zu "SSID, &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,180, WiFi.macAddress().c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
     EPD_7IN5B_V2_Display(BlackImage, RYImage);
     DEV_Delay_ms(2000);
-
+    esp_sleep_enable_timer_wakeup(60000*2^nocon);
+    esp_deep_sleep_start();
   }
   else {
     nocon = 0;
+    
+
     Paint_SelectImage(BlackImage);
     
 
