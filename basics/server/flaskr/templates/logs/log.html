@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Battery{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for volt in volts %}
+    <article class="volt">
+      <header>
+        <div>
+          <h1>Time: {{ volt["statusTime"] }}</h1>
+          <div class="battery">Battery: {{ volt["volt"] }}<div>
+        </div>
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
