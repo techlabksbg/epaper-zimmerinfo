@@ -16,9 +16,7 @@ def index():
 
     db = get_db()
 
-    macid = db.execute(
-        'SELECT id FROM mac WHERE mac = ?',(mac,)
-    ).fetchone()
+    macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
 
     if (macid == None):
         db.execute('INSERT INTO mac (mac) VALUES (?)', (mac, ))
