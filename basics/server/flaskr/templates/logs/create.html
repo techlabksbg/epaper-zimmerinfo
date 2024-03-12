@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Assign Room to MAC{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="mac">MAC-Address</label>
+    <input name="mac" id="mac" value="{{ request.form['mac'] }}" required>
+    <label for="roomname">room name</label>
+    <textarea name="roomname" id="roomname">{{ request.form['roomname'] }}</textarea>
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
