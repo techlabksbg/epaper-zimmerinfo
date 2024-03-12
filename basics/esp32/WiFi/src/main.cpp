@@ -39,7 +39,15 @@ void antwort(response){
     String key = response.substring(pos, keyende);
     String value = response.substring(keyende+1, zeilenende);
     pos = zeilenende+1;
+    if key == sleep{
+      sleep(value)
+    }
   }
+}
+
+void sleep(time){
+  esp_sleep_enable_timer_wakeup(time*1000000);
+  esp_deep_sleep_start();
 }
 void setup(){
   printf("EPD_7IN5B_V2_test Demo\r\n");
@@ -88,10 +96,14 @@ void setup(){
     int len = httpsRequest("epaper.tech-lab.ch", "/anzeige?mac="Mac"&volt=" batterie_messung(), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
 <<<<<<< HEAD
+<<<<<<< HEAD
     String antwort = String(char*)(BlackImage)
 =======
     String antwort = String(char*)(BlackImage);
 >>>>>>> e5348b29b2a8ea12cc671923ead7f6d7ffdf8c39
+=======
+    String response = String(char*)(BlackImage);
+>>>>>>> origin/esp32fb
     Serial.println("Displaying graphics");
     EPD_7IN5B_V2_Display(BlackImage, RYImage);
     DEV_Delay_ms(2000);
