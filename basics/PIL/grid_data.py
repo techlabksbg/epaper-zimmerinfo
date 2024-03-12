@@ -22,6 +22,19 @@ AnfangszeitenKSBG = {
     "19:55:00" : 451
 }
 
+AnfangszeitenISME = {
+    1 : "07:45",
+    2 : "08:40",
+    3 : "09:35",
+    4 : "10:40",
+    5 : "11:35",
+    6 : "12:25",
+    7 : "13:15",
+    8 : "14:05",
+    9 : "14:55"
+}
+
+
 Wochentage = {
     "Dienstag" : 246,
     "Mittwoch" : 358,
@@ -51,6 +64,18 @@ lesson_pixel = [
     [1195,451]
 ]
 
+isme_lesson_pixel = [
+    [460,48],
+    [520,74],
+    [575,103],
+    [640,132],
+    [695,161],
+    [745,190],
+    [795,219],
+    [845,248],
+    [895,277]
+]
+
 def minutenrechner(time):
     my_time = time
     factors = (60, 1, 1/60)
@@ -60,7 +85,7 @@ def minutenrechner(time):
     print(t1)
     return t1
 
-minutenrechner("17:40:00")
+minutenrechner("14:55:00")
 
 def koordinatenfinder(timein):
     if timein in AnfangszeitenKSBG:
@@ -100,7 +125,7 @@ def position_box(starttime, endtime):
             pixeloffset = int(timedifference*0.644444)
             end_pixel = lesson_pixel[time-1][1] + pixeloffset
     print(start_pixel, end_pixel)
-position_box("07:47:00", "08:45:00")
+# position_box("07:47:00", "08:45:00")
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
