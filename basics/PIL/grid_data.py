@@ -2,22 +2,24 @@ from operator import mul
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 
 AnfangszeitenKSBG = {
-    "07:40" : 48,
-    "08:34" : 74,
-    "09.28" : 103,
-    "10:30" : 132,
-    "11:24" : 161,
-    "12:14" : 190,
-    "13:04" : 219,
-    "13:55" : 248,
-    "14:49" : 277,
-    "15:43" : 306,
-    "16:33" : 335,
-    "17:23" : 364,
+    "07:40:00" : 48,
+    "08:34:00" : 74,
+    "09:28:00" : 103,
+    "10:30:00" : 132,
+    "11:24:00" : 161,
+
+    "12:14:00" : 190,
+    "13:04:00" : 219,
+
+    "13:55:00" : 248,
+    "14:49:00" : 277,
+    "15:43:00" : 306,
+    "16:33:00" : 335,
+    "17:23:00" : 364,
     # Ab hier Normale ISME-Zeiten Mittwoch
-    "18:15" : 393,
-    "19:05" : 422,
-    "19:55" : 451
+    "18:15:00" : 393,
+    "19:05:00" : 422,
+    "19:55:00" : 451
 }
 
 Wochentage = {
@@ -28,6 +30,26 @@ Wochentage = {
     "Samstag" : 694
 }
 
+lesson_pixel = [
+    [460,48],
+    [514,74],
+    [568,103],
+    [630,132],
+    [684,161],
+
+    [734,190],
+    [784,219],
+
+    [835,248],
+    [889,277],
+    [943,306],
+    [993,335],
+    [1043,364],
+
+    [1095,393],
+    [1145,422],
+    [1195,451]
+]
 
 def minutenrechner(time):
     my_time = time
@@ -38,28 +60,24 @@ def minutenrechner(time):
     print(t1)
     return t1
 
-minutenrechner("17:40")
+minutenrechner("17:40:00")
 
 def koordinatenfinder(timein):
     if timein in AnfangszeitenKSBG:
         return AnfangszeitenKSBG[timein]
 
-#     for time in AnfangszeitenKSBG.keys():
-#         x = minutenrechner(timein)
-#         y = minutenrechner(AnfangszeitenKSBG.keys())
-#         if x == y:
-#             return y[x]
-#             break
-#         # else 
+font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 
-def hauptsacheeinrechteck(timea, timeb):
+def hauptsacheeinrechteck(timea, timeb, drawbw):
         #img = Image.new("RGB", (800,480), color=(255,255,255))
-    bw = Image.new("1", (800,480), color=1)
 
     #font = ImageFont.truetype("../pixelperfect/Minimal5x7.ttf", size=32)
-    drawbw = ImageDraw.Draw(bw)
-    drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
-    bw.show()
+    # drawbw = ImageDraw.Draw(bw)
+    draw_point = (45,koordinatenfinder(timea))
+    drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
+    
+    # drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
+    
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
