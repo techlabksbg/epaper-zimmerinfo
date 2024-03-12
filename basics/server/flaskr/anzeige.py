@@ -25,14 +25,14 @@ def calculate_sleep_time():
 
     return sleep_time
 
-def plot_graph(macid):
+def plot_graph(macid, mac):
     path = f"flaskr/static/macs/{macid}"
 
     # remove all files in the directory
     for file in os.listdir(path):
         os.remove(f"{path}/{file}")
 
-    plot_voltage(path, macid)
+    plot_voltage(path, macid, mac)
     convert_to_bin(path)
 
 @bp.route('/anzeige')
@@ -64,6 +64,6 @@ def index():
 
     # generate graph if needed
     if (roomid == None):
-        plot_graph(macid)
+        plot_graph(macid, mac)
 
     return render_template('anzeige/index.html', roomid=roomid, macid=macid, sleep_time=sleep_time)

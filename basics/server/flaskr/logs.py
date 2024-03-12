@@ -41,7 +41,17 @@ def log(id):
     db = get_db()
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
 
-    return render_template('logs/log.html', volts=volts)
+    mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
+    roomid = mac['roomid']
+    mac = mac['mac']
+
+    room = db.execute('SELECT roomname FROM room WHERE id = ?', (roomid, )).fetchone()
+    if (room == None):
+        room = None
+    else:
+        room = room[0]
+
+    return render_template('logs/log.html', volts=volts, mac=mac, room=room)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
