@@ -4,9 +4,8 @@
 #include "DEV_Config.h"
 #include "EPD.h"
 #include "GUI_Paint.h"
-#include "ImageData.h"
 #include <stdlib.h>
-
+#define nocon 0
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 #define BATPIN 34
 
@@ -25,6 +24,10 @@ void initWiFi() {
 void setup(){
   Serial.begin(115200);
   initWiFi();
+  delay(10000);
+  if (WiFi.status() !=WL_CONNECTED) {
+    nocon = nocon+1
+  }
 }
 
 void loop(){}
