@@ -31,8 +31,15 @@ String batterie_messung() {
   return String(vbat);
 }
 
-String antwort(){
-  
+void antwort(response){
+  int pos = 0;
+  while (pos<response.length()) {
+    int zeilenende = response.indexOf("\n", pos);
+    int keyende = response.indexOf(" ", pos);
+    String key = response.substring(pos, keyende);
+    String value = response.substring(keyende+1, zeilenende);
+    pos = zeilenende+1;
+  }
 }
 void setup(){
   printf("EPD_7IN5B_V2_test Demo\r\n");
