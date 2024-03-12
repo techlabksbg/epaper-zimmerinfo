@@ -1,8 +1,10 @@
 # On Linux: sudo apt install python3-serial
-# On Windows: pip install serial
+
+# On Windows: pip install serial & pip install pyserial
+
 
 import serial
-import serial.tools.list_ports
+
 import re
 import sys
 import os
@@ -31,7 +33,7 @@ def getData():
 
 
 data = getData()
-port = "/dev/ttyACM0"  # getPort()
+port = "com5"  # getPort()
 print(f"Sending data to port {port}")
 with serial.Serial(port, 115200, timeout=0) as ser:
     chunk = 128

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Displays{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('logs.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for mac in macs %}
+    <article class="mac">
+      <header>
+        <div>
+          <h1>Raum: {{ mac["roomname"] }}, MAC-Addresse: {{ mac['macname'] }}</h1>
+          <div class="battery">Battery: {{ mac["battery"] }}<div>
+        </div>
+        <a class="action" href="{{ url_for('logs.log', id=mac['macid']) }}">More Battery Information</a>
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
