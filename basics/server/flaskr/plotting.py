@@ -16,7 +16,7 @@ display_breite = 800
 zeit_min = 0
 zeit_max = 1
 
-def plot_voltage(path, macid):
+def plot_voltage(path, macid, mac):
   global zeit_min, zeit_max
 
   cursor = get_db()
@@ -30,7 +30,7 @@ def plot_voltage(path, macid):
   zeit_max = max(zeit_werte)
 
   #plot_naive(zeit_werte, spannung_werte, path)
-  plot_matplotlib(zeit_werte, spannung_werte, path)
+  plot_matplotlib(zeit_werte, spannung_werte, path, mac)
 
 def display_x(t):
   return display_breite * (t - zeit_min).seconds / max(1, (zeit_max - zeit_min).seconds)
@@ -47,9 +47,10 @@ def plot_naive(zeit_werte, spannung_werte, path):
       draw.line((px, py, qx, qy), fill=0, width=2)
   bild.save(path+'/diagram.png')
 
-def plot_matplotlib(zeit_werte, spannung_werte, path):
+def plot_matplotlib(zeit_werte, spannung_werte, path, mac):
   # save plt as png with given size
   plt.figure(figsize=(display_breite/100, display_hoehe/100), dpi=100)
   plt.plot(zeit_werte, spannung_werte, 'black')
+  plt.title('MAC-Adresse: ' + mac)
   plt.savefig(path+'/matplotdiagram.png', bbox_inches='tight')
   plt.close()

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Battery{% endblock %}</h1>
+  <h1>{% block title %}Battery of MAC-Address {{mac}}{% if not room == None%}, Room {{room}}{%endif%}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
           <h1>Time: {{ volt["statusTime"] }}</h1>
           <div class="battery">Battery: {{ volt["volt"] }}<div>
         </div>
-      </header>
+      </header> 
     </article>
     {% if not loop.last %}
       <hr>
