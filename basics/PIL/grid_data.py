@@ -1,6 +1,29 @@
+AnfangszeitenKSBG = [
+    "07:40" : 48,
+    "08:34" : 74,
+    "09.28" : 103,
+    "10:30" : 132,
+    "11:24" : 161,
+    "12:14" : 190,
+    "13:04" : 219,
+    "13:55" : 248,
+    "14:49" : 277,
+    "15:43" : 306,
+    "16:33" : 335,
+    "17:23" : 364,
+    # Ab hier Normale ISME-Zeiten Mittwoch
+    "18:15" : 393,
+    "19:05" : 422,
+    "19:55" : 451
+]
 
-
-
+Wochentage = [
+    "Dienstag" : 246,
+    "Mittwoch" : 358,
+    "Donnerstag" : 470,
+    "Freitag" : 582,
+    "Samstag" : 694
+]
 
 
 def draw_lesson(day, time, subject, Class, teacher): #day defines the starting day in int (2-7)
@@ -106,7 +129,7 @@ def draw_lesson_today(time, subject, Class, teacher):
         drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
 def draw_reservation_at_lessontime(starttime, teacher):
-   if time == "7:40":
+    if time == "7:40":
         draw_point = (x, 51)
         drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     if time == "8:25":
