@@ -1,6 +1,7 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
+from flask_basicauth import BasicAuth
 from werkzeug.exceptions import abort
 from datetime import datetime
 
@@ -10,9 +11,13 @@ from flaskr.misc import times
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
+from flaskr.misc import xml_server
 from flask import request
 
+import flaskr.mysecrets as mysecrets
+
 import os
+import requests
 
 bp = Blueprint('anzeige', __name__)
 
@@ -42,10 +47,15 @@ def calc_image_update(macid, hash):
     roomid = db.execute('SELECT roomid FROM mac WHERE id = ?', (macid,)).fetchone()[0]
     hash_db = 0
     if (roomid != None):
-        # TODO get latest xml file and create .bin
+        roomname = db.execute('SELECT roomname FROM room WHERE id = ?', (roomid,)).fetchone()[0]
+        xml = requests.get(f"{xml_server}?roomname={roomname}",  auth = (mysecrets.login, mysecrets.password)).content
 
-        with open(f"flaskr/static/rooms/{roomid}/data.bin", 'wb') as f:
-            f.write(b'\0' * 96*1024)
+        with open(f"flaskr/static/rooms/{roomid}/data.xml", 'wb') as f:
+            f.write(xml)
+            #hash_db = get_hash(roomid)
+        
+        #with open(f"flaskr/static/rooms/{roomid}/data.bin", 'wb') as f:
+        #    f.write(b'\0' * 96*1024)
         
         hash_db = get_hash(roomid)
 
