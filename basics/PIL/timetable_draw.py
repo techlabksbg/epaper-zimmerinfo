@@ -1,7 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from time import sleep
 from operator import mul
-import grid_data as gd
 import grid_draw as gr
 import grid_data as gd
 from lxml import etree
@@ -9,21 +8,15 @@ from event import Event
 from week import Week
 from day import Day
 from datetime import date
+import initializer
 import deutsch
 
-def get_text_dimensions(text_string, font):
-    # https://stackoverflow.com/a/46220683/9263761
-    ascent, descent = font.getmetrics()
 
-    text_width = font.getmask(text_string).getbbox()[2]
-    text_height = font.getmask(text_string).getbbox()[3] + descent
 
-    return (text_width, text_height)
-
-def initializer():
+def initialize_image():
     bw = Image.new("1", (800,480), color=1)
     drawbw = ImageDraw.Draw(bw)
-    gr.grid_drawer(drawbw)
+    gd.grid_drawer(drawbw)
     return bw
 
 #get the events from the file
@@ -35,9 +28,10 @@ for event in tree.findall(".//event"):
 week = Week(events, date.today())
 
 #make image
-bw = initializer()
-bw.save("bw.png", "PNG")
-bw.show()
+bw = initializer.initialise_immage()
+gr.grid_drawer(bw[0], 5)
+bw[1].save("bw.png", "PNG")
+bw[1].show()
 
 #insert data into immage
 for di, day in enumerate(week.days):  # di: Index, day

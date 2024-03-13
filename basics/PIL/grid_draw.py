@@ -7,18 +7,6 @@ from time import sleep
 from operator import mul
 import grid_data as gd
 
-# https://levelup.gitconnected.com/how-to-properly-calculate-text-size-in-pil-images-17a2cc6f51fd
-def get_text_dimensions(text_string, font):
-    # https://stackoverflow.com/a/46220683/9263761
-    ascent, descent = font.getmetrics()
-
-    text_width = font.getmask(text_string).getbbox()[2]
-    text_height = font.getmask(text_string).getbbox()[3] + descent
-
-    return (text_width, text_height)
-
-#img = Image.new("RGB", (800,480), color=(255,255,255))
-
 def grid_drawer(drawbw, current_week_day):
     # Draw fat horizontal lines
     # Weekdays and Hours Separator
@@ -66,15 +54,14 @@ def grid_drawer(drawbw, current_week_day):
     sleep(2)
 
     #Draw Days
+    week_days = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
     font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
     draw_point = (52, 27)
-    drawbw.multiline_text(draw_point, text="Heute", font=font, fill=0)
-
+    drawbw.multiline_text(draw_point, text="Heute " + week_days[current_week_day], font=font, fill=0)
     x = 257
-    days = ["Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Montag, Dienstag, Mittwoch, Donnerstag, Freitag"]
-    for day in days:
+    for i in range(1,6):
         draw_point = (x, 27)
-        drawbw.multiline_text(draw_point, text=day, font=font, fill=0)
+        drawbw.multiline_text(draw_point, text=week_days[current_week_day+i], font=font, fill=0)
         x += 112
 
 
@@ -82,5 +69,3 @@ def grid_drawer(drawbw, current_week_day):
 
     draw_point = (45,4)
     drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
-
-    gd.hauptsacheeinrechteck("09:28:00", "10:13:00", drawbw) 
