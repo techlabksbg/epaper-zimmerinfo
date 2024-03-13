@@ -51,3 +51,10 @@ for di, day in enumerate(week.days):  # di: Index, day
         lehrerkuerzel = event.lehrerkuerzel
         print(lehrername)
         print(lehrerkuerzel)
+        wochentag = event.start_datetime.date().weekday() #0=Montag, 6=Sonntag
+        print(wochentag)
+        event_datum = event.start_datetime.date() #Datum im format "YYYY-MM-DD"
+
+        heute_datum = date.today() #Datum im format "YYYY-MM-DD"
+        print(heute_datum)
+        heute_wochentag = date.today().weekday()
