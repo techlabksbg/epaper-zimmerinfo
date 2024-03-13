@@ -50,6 +50,10 @@ void initWiFi() {
     seconds--;
   }
   Serial.println(WiFi.localIP());
+  if (WiFi.status() !=WL_CONNECTED) {
+    errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
+    goToSleep(60*(1<<nocon));
+  }
 }
 
 //from basics/esp32/batterie_messung
@@ -117,21 +121,21 @@ void goToSleep(long long time){
 }
 
 void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
-    nocon = nocon+1;
-    String MAC = "MAC: " + String(WiFi.macAddress());
-    String battery = "Batteriespannung: " + batterie_messung() + "V";
-    // Set images to white here!
-    printf("NewImage:BlackImage and RYImage\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
-    Paint_NewImage(BlackImage+ImageSize, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
-    Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(100,100, fehler.c_str(), &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
-    printf("EPD_Display\r\n");
-    EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
-    goToSleep(60*(1<<nocon));
+  nocon = nocon+1;
+  String MAC = "MAC: " + String(WiFi.macAddress());
+  String battery = "Batteriespannung: " + batterie_messung() + "V";
+  // Set images to white here!
+  printf("NewImage:BlackImage and RYImage\r\n");
+  Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+  Paint_NewImage(BlackImage+ImageSize, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+  Paint_SelectImage(BlackImage);
+  Paint_DrawString_EN(100,100, fehler.c_str(), &Font16, WHITE, BLACK);
+  Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
+  Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
+  Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
+  printf("EPD_Display\r\n");
+  EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
+  goToSleep(60*(1<<nocon));
 }
 
 void setup(){
@@ -159,19 +163,14 @@ void setup(){
   
 
   initWiFi();
-  if (WiFi.status() !=WL_CONNECTED) {
-    errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
-    goToSleep(60*(1<<nocon));
-  } else {
-    String mac = WiFi.macAddress();
-    nocon = 0;
-    flash(5, 10, 100);
-    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE, (char *)BlackImage, Imagesize*2);
-    BlackImage[len]=0;
-    String response = String((char*)BlackImage);
-    flash(5,10,100);
-    antwort(response, BlackImage, Imagesize);
-  }
+  String mac = WiFi.macAddress();
+  nocon = 0;
+  flash(5, 10, 100);
+  int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE, (char *)BlackImage, Imagesize*2);
+  BlackImage[len]=0;
+  String response = String((char*)BlackImage);
+  flash(5,10,100);
+  antwort(response, BlackImage, Imagesize);
   goToSleep(120);
 }
 
