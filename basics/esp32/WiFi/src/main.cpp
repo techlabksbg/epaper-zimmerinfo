@@ -9,8 +9,9 @@
 #include "httpsRequest.h"
 
 RTC_DATA_ATTR int nocon=0;
+RTC_DATA_ATTR char[20] bildhash;
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
-
+String firmware = "20240313-0923"
 void goToSleep(long long time);
 
 #define BATPIN 34
@@ -61,10 +62,15 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
         value = String("https://epaper.tech-lab.ch/")+value;
       }
       int len = httpsRequest(value,(char*)BlackImage, ImageSize*2);
-      //hier kann WiFI abgeschaltet werden
       Serial.println("Displaying graphics");
       EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
       DEV_Delay_ms(2000);
+    }
+    if (key=="update"){
+
+    }
+    if (key=="bildhash"){
+      bildhash=value
     }
   }
 }
@@ -75,10 +81,29 @@ void goToSleep(long long time){
   esp_deep_sleep_start();
 }
 
+void noconnection(){
+  nocon = nocon+1;
+  String MAC = "MAC: " + String(WiFi.macAddress());
+  String battery = "Batteriespannung: " + batterie_messung() + "V";
+  Paint_SelectImage(BlackImage);
+  Paint_SelectImage(RYImage);
+  Paint_SelectImage(BlackImage);
+  Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
+  Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
+  Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
+  printf("EPD_Display\r\n");
+  EPD_7IN5B_V2_Display(BlackImage,RYImage);
+  goToSleep(1<<nocon);
+}
+
+
 void setup(){
   Serial.begin(115200);
   printf("EPD_7IN5B_V2_test Demo\r\n");
   DEV_Module_Init();
+  if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
+    bildhash=0
+  }
 
   printf("e-Paper Init and Clear...\r\n");
   EPD_7IN5B_V2_Init();
@@ -89,6 +114,7 @@ void setup(){
   if ((BlackImage = (UBYTE *)malloc(Imagesize*2)) == NULL) {
     printf("Failed to apply for black memory...\r\n");
     while(1);
+    //LED blinken lassen
   }
   RYImage=BlackImage+Imagesize;
   
@@ -98,26 +124,12 @@ void setup(){
 
   initWiFi();
   if (WiFi.status() !=WL_CONNECTED) {
-
-
-    nocon = nocon+1;
-    String MAC = "MAC: " + String(WiFi.macAddress());
-    String battery = "Batteriespannung: " + batterie_messung() + "V";
-    Paint_SelectImage(BlackImage);
-    Paint_SelectImage(RYImage);
-    Paint_SelectImage(BlackImage);
-    Paint_DrawString_EN(100,150, "keine Verbindung zu " SSID, &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
-    Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
-    printf("EPD_Display\r\n");
-    EPD_7IN5B_V2_Display(BlackImage,RYImage);
-    goToSleep(1<<nocon);
-    }
-
+    noconnection()
+  } 
   else {
     String mac = WiFi.macAddress();
     nocon = 0;
-    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung(), (char *)BlackImage, Imagesize*2);
+    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="bildhash+"firmware"=firmware, (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     antwort(response, BlackImage, Imagesize);
