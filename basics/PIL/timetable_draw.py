@@ -27,7 +27,7 @@ for event in tree.findall(".//event"):
 
 week = Week(events, date.today())
 
-#make image
+#make image and grid
 bw = initializer.initialise_immage()
 gr.grid_drawer(bw[0], 5, "h21")
 bw[1].save("bw.png", "PNG")
@@ -52,3 +52,4 @@ for di, day in enumerate(week.days):  # di: Index, day
         heute_datum = date.today() #Datum im format "YYYY-MM-DD"
         print(heute_datum)
         heute_wochentag = date.today().weekday()
+
