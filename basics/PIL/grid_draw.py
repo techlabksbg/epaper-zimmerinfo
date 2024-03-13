@@ -19,7 +19,7 @@ def get_text_dimensions(text_string, font):
 
 #img = Image.new("RGB", (800,480), color=(255,255,255))
 
-def grid_drawer(drawbw):
+def grid_drawer(drawbw, current_week_day):
     # Draw fat horizontal lines
     # Weekdays and Hours Separator
     drawbw.line([(0, 45), (800, 45)] , fill ="black", width = 2) 
@@ -71,7 +71,7 @@ def grid_drawer(drawbw):
     drawbw.multiline_text(draw_point, text="Heute", font=font, fill=0)
 
     x = 257
-    days = ["Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
+    days = ["Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Montag, Dienstag, Mittwoch, Donnerstag, Freitag"]
     for day in days:
         draw_point = (x, 27)
         drawbw.multiline_text(draw_point, text=day, font=font, fill=0)
