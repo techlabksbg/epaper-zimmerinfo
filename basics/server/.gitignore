@@ -1,4 +1,5 @@
 instance/
 flaskr/static/macs/
 flaskr/static/rooms/
-flaskr/static/uploads
+flaskr/static/uploads/
+flaskr/static/firmware/
