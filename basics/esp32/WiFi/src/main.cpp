@@ -129,7 +129,7 @@ void setup(){
   else {
     String mac = WiFi.macAddress();
     nocon = 0;
-    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="bildhash+"firmware"=firmware, (char *)BlackImage, Imagesize*2);
+    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="bildhash+"&firmware"=firmware, (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     antwort(response, BlackImage, Imagesize);
