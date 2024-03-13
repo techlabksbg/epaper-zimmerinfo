@@ -26,3 +26,11 @@ for di, day in enumerate(week.days):  # di: Index, day
         print(event.lehrername)
         print(type(event.lehrerkuerzel))
         print(event.lehrerkuerzel)
+        print(event.start_datetime.date().weekday())
+        print(event.start_datetime.date())
+
+        heute_datum = date.today()
+        print(heute_datum)
+        heute_wochentag = date.today().weekday()
+        print(heute_wochentag)
+        
