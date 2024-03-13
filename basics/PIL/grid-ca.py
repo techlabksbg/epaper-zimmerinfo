@@ -116,7 +116,7 @@ drawbw.multiline_text(draw_point, text="Anderer Versuch", font=font, fill=0)
 drawbw.rounded_rectangle([(244, 48), (352, 72)] , fill ="white", radius=7, outline ="black", width = 1) 
 
 draw_point = (246, 48)
-drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill="#FF0000" )
+drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0 )
 
 draw_point = (246, 58)
 drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)

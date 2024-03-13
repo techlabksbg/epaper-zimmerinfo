@@ -126,16 +126,10 @@ def position_box(starttime, endtime):
         else:
             timedifference = lesson_pixel[index-1][0]-endtime_minute
             pixeloffset = int(timedifference*0.644444)
-<<<<<<< HEAD
-            end_pixel = lesson_pixel[time-1][1] + pixeloffset
-    print(start_pixel, end_pixel)
-# position_box("07:47:00", "08:45:00")
-=======
             print(pixeloffset)
             end_pixel = lesson_pixel[index-1][1] + pixeloffset
     print("Startpixel,", start_pixel, end_pixel)
 position_box("07:47:00", "08:45:00")
->>>>>>> 50ea56eba0b59a8050b7749656490b9f0ffe66ab
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
