@@ -11,12 +11,31 @@
 #include "httpsota.h"
 #include "firmware-version.h"
 
+
 RTC_DATA_ATTR int nocon=0;
 RTC_DATA_ATTR char bildhash[20];
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
 void goToSleep(long long time);
 void errorScreen(String fehler, UBYTE *BlackImage, int ScreenSize);
+
+void flash(int times, int on, int off) {
+  for (int i=0; i<times; i++) {
+    digitalWrite(BUILTIN_LED, HIGH);
+    delay(on);
+    digitalWrite(BUILTIN_LED, LOW);
+    delay(off);
+  }
+}
+
+void fadeout() {
+  for (int i=0; i<1000; i++) {
+    digitalWrite(BUILTIN_LED, HIGH);
+    delayMicroseconds(1000-i);
+    digitalWrite(BUILTIN_LED, LOW);
+    delayMicroseconds(i);
+  }
+}
 
 #define BATPIN 34
 void initWiFi() {
@@ -27,6 +46,7 @@ void initWiFi() {
   while (WiFi.status() !=WL_CONNECTED && seconds>0) {
     Serial.print(".");
     delay(1000);
+    flash(1, 10, 0);
     seconds--;
   }
   Serial.println(WiFi.localIP());
@@ -91,6 +111,7 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
 
 void goToSleep(long long time){
   Serial.printf("Going deepsleep for %d seconds", time);
+  fadeout();
   esp_sleep_enable_timer_wakeup(time*1000000ULL);
   esp_deep_sleep_start();
 }
@@ -115,6 +136,8 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
 
 void setup(){
   Serial.begin(115200);
+  pinMode(BUILTIN_LED, OUTPUT);
+  flash(2, 20, 300);
   printf("EPD_7IN5B_V2_test Demo\r\n");
   DEV_Module_Init();
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
@@ -142,9 +165,11 @@ void setup(){
   } else {
     String mac = WiFi.macAddress();
     nocon = 0;
+    flash(5, 10, 100);
     int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE, (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
+    flash(5,10,100);
     antwort(response, BlackImage, Imagesize);
   }
   goToSleep(120);
