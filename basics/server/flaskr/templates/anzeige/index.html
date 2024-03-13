@@ -1,3 +1,5 @@
-update {% if False %}static/firmware/version.bin{%endif%}
-bild {% if roomid == None %}static/macs/{{macid}}/data.bin{% else %}static/rooms/{{roomid}}/data.bin{% endif %}
-sleep {{sleep_time}}
+{% if not firmware == -1 %}update {{url_for('static', filename='firmware/', _external=True)}}{{firmware}}.bin
+{%endif%}{% if roomid == 0 %}bild {{url_for('static', filename='macs/', _external=True)}}{{macid}}/data.bin
+{% elif roomid > 0 %}bild {{url_for('static', filename='rooms/', _external=True)}}{{roomid}}/data.bin
+hash {{hash}}
+{% endif %}sleep {{sleep_time}}
