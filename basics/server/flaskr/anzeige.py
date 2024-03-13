@@ -9,6 +9,7 @@ from flaskr.db import get_db
 from flaskr.misc import times
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
+from flaskr.logs import get_hash
 from flask import request
 
 import os
@@ -39,8 +40,14 @@ def calc_image_update(macid, hash):
     db = get_db()
 
     roomid = db.execute('SELECT roomid FROM mac WHERE id = ?', (macid,)).fetchone()[0]
+    hash_db = 0
     if (roomid != None):
-        hash_db = db.execute('SELECT hash FROM room WHERE id = ?', (roomid,)).fetchone()[0]
+        # TODO get latest xml file and create .bin
+
+        with open(f"flaskr/static/rooms/{roomid}/data.bin", 'wb') as f:
+            f.write(b'\0' * 96*1024)
+        
+        hash_db = get_hash(roomid)
 
         if (hash_db == hash):
             roomid = -1
@@ -100,13 +107,13 @@ def index():
 
     roomid, hash_db = calc_image_update(macid, hash)
 
-    sleep_time = calculate_sleep_time()
-    sleep_time = 120 # for testing purposes
-
     update_firmware = calc_firmware_upadte(firmware)
 
     # generate graph if needed
     if (roomid == 0):
         plot_graph(macid, mac)
+
+    sleep_time = calculate_sleep_time()
+    sleep_time = 120 # for testing purposes
 
     return render_template('anzeige/index.html', firmware=update_firmware, roomid=roomid, macid=macid, sleep_time=sleep_time, hash=hash_db)

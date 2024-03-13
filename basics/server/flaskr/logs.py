@@ -94,13 +94,6 @@ def create():
                 except OSError:
                     pass
 
-                # TODO get xml file and create data.bin file, this is only temporary
-                with open(f"flaskr/static/rooms/{roomid['id']}/data.bin", 'wb') as f:
-                    f.write(bytearray(96*1024))
-
-                hash = get_hash(roomid['id'])
-                db.execute('UPDATE room SET hash = ? WHERE id = ?', (hash, roomid['id']))
-
             roomid = roomid['id']
 
             mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
