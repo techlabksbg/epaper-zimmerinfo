@@ -29,7 +29,7 @@ week = Week(events, date.today())
 
 #make image
 bw = initializer.initialise_immage()
-gr.grid_drawer(bw[0], 5)
+gr.grid_drawer(bw[0], 5, "h21")
 bw[1].save("bw.png", "PNG")
 bw[1].show()
 
