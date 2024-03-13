@@ -56,12 +56,11 @@ bool httpsOTA(String url){
             Serial.println("Firmware Upgrade Fail");
             return false;
         }
-        for (int i=0; i<1000; i++) {
-            int k = abs(500-i);
+        for (int i=0; i<50; i++) {
             digitalWrite(BUILTIN_LED, HIGH);
-            delayMicroseconds(500-k);
+            delay(1);
             digitalWrite(BUILTIN_LED, LOW);
-            delayMicroseconds(k);
+            delay(19);
         }
     }
     return false;

@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string>
 
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+
 #include "httpsRequest.h"
 #include "httpsota.h"
 #include "firmware-version.h"
@@ -135,6 +138,9 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
 }
 
 void setup(){
+  // Disable Brownout Detection 
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+
   Serial.begin(115200);
   pinMode(BUILTIN_LED, OUTPUT);
   flash(2, 20, 300);
