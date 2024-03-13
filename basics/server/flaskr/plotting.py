@@ -2,6 +2,7 @@ import sqlite3
 import os
 from PIL import Image, ImageDraw
 import matplotlib
+from datetime import datetime
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
@@ -26,8 +27,11 @@ def plot_voltage(path, macid, mac):
   zeit_werte = [t for u, t in inhalt]
   spannung_werte = [u for u, t in inhalt]
 
-  zeit_min = min(zeit_werte)
-  zeit_max = max(zeit_werte)
+  zeit_min = datetime.now()
+  zeit_max = datetime.now()
+  if (len(zeit_werte) != 0):
+    zeit_min = min(zeit_werte)
+    zeit_max = max(zeit_werte)
 
   #plot_naive(zeit_werte, spannung_werte, path)
   plot_matplotlib(zeit_werte, spannung_werte, path, mac)

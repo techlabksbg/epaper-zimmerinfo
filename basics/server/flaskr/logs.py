@@ -7,10 +7,19 @@ from flaskr.auth import login_required
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
 from flask import request
+import hashlib
 
 import os
 
 bp = Blueprint('logs', __name__)
+
+def get_hash(roomid):
+    path = "flaskr"+url_for('static', filename=f'rooms/{roomid}/data.bin')
+    hash = ""
+    with open(path, 'rb') as f:
+        data = f.read()
+        hash = hashlib.md5(data).hexdigest()
+    return hash[:16]
 
 @bp.route('/')
 def index():
@@ -52,7 +61,7 @@ def log(id):
     if (room == None):
         room = None
     else:
-        room = room[0]
+        room = room['roomname']
 
     return render_template('logs/log.html', volts=volts, mac=mac, room=room, id=str(id))
 
@@ -80,13 +89,22 @@ def create():
                 db.commit()
 
                 roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
-                os.makedirs(f"flaskr/static/rooms/{roomid[0]}")
+                try:
+                    os.makedirs(f"flaskr/static/rooms/{roomid['id']}")
+                except OSError:
+                    pass
 
-            roomid = roomid[0]
+                # TODO get xml file and create data.bin file
+                open(f"flaskr/static/rooms/{roomid['id']}/data.bin", 'w').close()
+
+                hash = get_hash(roomid['id'])
+                db.execute('UPDATE room SET hash = ? WHERE id = ?', (hash, roomid['id']))
+
+            roomid = roomid['id']
 
             mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
             if (mac_for_room != None):
-                error = 'Room already has mac ' + str(mac_for_room[0]) + ' assigned to it.'
+                error = 'Room already has MAC-Address ' + str(mac_for_room['mac']) + ' assigned to it.'
                 flash(error)
                 return render_template('logs/create.html')
 
@@ -95,8 +113,11 @@ def create():
                 db.execute('INSERT INTO mac (roomid, mac) VALUES (?, ?)', (roomid, mac))
                 db.commit()
 
-                macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()[0]
-                os.makedirs(f"flaskr/static/macs/{macid}")
+                macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
+                try:
+                    os.makedirs(f"flaskr/static/macs/{macid}")
+                except OSError:
+                    pass
 
                 plot_voltage(f"flaskr/static/macs/{macid}", macid, mac)
             else:
