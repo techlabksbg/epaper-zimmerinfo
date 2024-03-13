@@ -1,5 +1,5 @@
-{% if not firmware == -1 %}update {{url_for('static', filename='firmware/', _external=True)}}{{firmware}}.bin
-{%endif%}{% if roomid == 0 %}bild {{url_for('static', filename='macs/', _external=True)}}{{macid}}/data.bin
-{% elif roomid > 0 %}bild {{url_for('static', filename='rooms/', _external=True)}}{{roomid}}/data.bin
+{% if not firmware == -1 %}update {{url_for('static', filename='firmware/', _external=True, _scheme='https')}}{{firmware}}.bin
+{%endif%}{% if roomid == 0 %}bild {{url_for('static', filename='macs/', _external=True, _scheme='https')}}{{macid}}/data.bin
+{% elif roomid > 0 %}bild {{url_for('static', filename='rooms/', _external=True, _scheme='https')}}{{roomid}}/data.bin
 hash {{hash}}
 {% endif %}sleep {{sleep_time}}
