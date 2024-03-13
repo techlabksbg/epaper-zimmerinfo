@@ -69,3 +69,12 @@ def grid_drawer(drawbw, current_week_day):
 
     draw_point = (45,4)
     drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
+
+    # content
+prozent = 100
+x = 32-(prozent/100*24)
+y = 792-(prozent/100*24)
+
+drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+
+drawbw.rectangle([(764,9),(765,11)])
