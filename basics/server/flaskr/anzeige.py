@@ -49,13 +49,34 @@ def calc_image_update(macid, hash):
     return roomid, hash_db
 
 def calc_firmware_upadte(firmware):
-    return -1
+    path = "flaskr"+url_for('static', filename='firmware/')
+    files = os.listdir(path)
+    firmware = int(firmware.replace('-', ''))
+
+    latest_version = -1
+    int_latest_version = -1
+
+    for file in files:
+        if not file.endswith('.bin'):
+            continue
+
+        version = file.split('.')[0]
+        int_version = int(version.replace('-', ''))
+
+        if (int_version > firmware):
+            if (int_latest_version < int_version):
+                latest_version = version
+                int_latest_version = int_version
+        
+    return latest_version
+
 
 @bp.route('/anzeige')
 def index():
     mac = request.args.get('mac')
     volt = request.args.get('volt')
     firmware = request.args.get('firmware')
+    print(firmware)
     hash = request.args.get('hash')
 
     db = get_db()
@@ -71,12 +92,11 @@ def index():
             os.makedirs(f"flaskr/static/macs/{macid[0]}")
         except OSError:
             pass
-
-    print(macid[0])
         
     macid = macid[0]
     db.execute('INSERT INTO volt (volt, macid) VALUES (?, ?)', (volt, macid))
     db.commit()
+    plot_graph(macid, mac)
 
     roomid, hash_db = calc_image_update(macid, hash)
 
