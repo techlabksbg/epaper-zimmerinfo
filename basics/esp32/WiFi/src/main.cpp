@@ -6,7 +6,10 @@
 #include "GUI_Paint.h"
 #include <stdlib.h>
 #include <string>
+
 #include "httpsRequest.h"
+#include "httpsota.h"
+#include "firmware-version.h"
 
 RTC_DATA_ATTR int nocon=0;
 RTC_DATA_ATTR char[20] bildhash;
@@ -72,11 +75,12 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
         DEV_Delay_ms(2000);
       }
     }
-    if (key=="update"){
-
-    }
     if (key=="bildhash"){
       bildhash=value
+    }
+    if (key == "update") {
+      httpsOTA(value);
+      errorScreen(String("OTA via https failed "), BlackImage, ImageSize);
     }
   }
 }
@@ -91,6 +95,10 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
     nocon = nocon+1;
     String MAC = "MAC: " + String(WiFi.macAddress());
     String battery = "Batteriespannung: " + batterie_messung() + "V";
+    // Set images to white here!
+    printf("NewImage:BlackImage and RYImage\r\n");
+    Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+    Paint_NewImage(BlackImage+ImageSize, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
     Paint_SelectImage(BlackImage);
     Paint_DrawString_EN(100,100, fehler.c_str(), &Font16, WHITE, BLACK);
     Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
@@ -98,7 +106,7 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
     Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
     printf("EPD_Display\r\n");
     EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
-    goToSleep(1<<nocon);
+    goToSleep(60*(1<<nocon));
 }
 
 void setup(){
@@ -122,9 +130,6 @@ void setup(){
   }
   RYImage=BlackImage+Imagesize;
   
-  printf("NewImage:BlackImage and RYImage\r\n");
-  Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
-  Paint_NewImage(RYImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
 
   initWiFi();
   if (WiFi.status() !=WL_CONNECTED) {
@@ -133,7 +138,7 @@ void setup(){
   } else {
     String mac = WiFi.macAddress();
     nocon = 0;
-    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="bildhash+"&firmware"=firmware, (char *)BlackImage, Imagesize*2);
+    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE, (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     antwort(response, BlackImage, Imagesize);
