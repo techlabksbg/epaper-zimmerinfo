@@ -81,28 +81,9 @@ def minutenrechner(time):
     factors = (60, 1, 1/60)
 
     t1 = sum(i*j for i, j in zip(map(int, my_time.split(':')), factors))
-    
-    #print(t1)
+
     return t1
 
-minutenrechner("14:55:00")
-
-def koordinatenfinder(timein):
-    if timein in AnfangszeitenKSBG:
-        return AnfangszeitenKSBG[timein]
-
-font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
-
-def hauptsacheeinrechteck(timea, timeb, drawbw):
-        #img = Image.new("RGB", (800,480), color=(255,255,255))
-
-    #font = ImageFont.truetype("../pixelperfect/Minimal5x7.ttf", size=32)
-    # drawbw = ImageDraw.Draw(bw)
-    draw_point = (45,koordinatenfinder(timea))
-    drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
-    
-    # drawbw.rounded_rectangle([(43, koordinatenfinder(timea)), (240, koordinatenfinder(timeb))] , fill ="white", radius=1, outline ="black", width = 1) 
-    
 
 def position_box(starttime, endtime):
     starttime_minute = minutenrechner(starttime)
@@ -132,33 +113,40 @@ def position_box(starttime, endtime):
     return coordinates
 position_box("015:50:00", "19:35:00")
 
+def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
+    if weekday == 5:
+        anfangszeiten = AnfangszeitenISME
+    else:
+        anfangszeiten = AnfangszeitenKSBG
+    return anfangszeiten
+
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
-    draw_point = (Wochentage[day], AnfangszeitenKSBG[time])
+    draw_point = (Wochentage[day], Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
     info = teacher_short + " " + aditional_info
-    draw_point = (Weekdays[day], AnfangszeitenKSBG[time]+14)
+    draw_point = (Weekdays[day], Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
 def draw_lesson_today(subject, Class, teacher, aditional_info, time): 
     info = subject + " " + Class
-    draw_point = (52, AnfangszeitenKSBG[time])
+    draw_point = (52, Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher + " " + aditional_info
-    draw_point = (52, AnfangszeitenKSBG[time]+14)
+    draw_point = (52, Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     
 def draw_reservation_at_lessontime_today(starttime, teacher, time):
-    draw_point = (52, AnfangszeitenKSBG[time])
+    draw_point = (52, Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
-    draw_point = (52, AnfangszeitenKSBG[time]+14)
+    draw_point = (52, Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 def draw_reservation_at_lessontime(starttime, teacher, time, day):
-    draw_point = (Weekdays[day], AnfangszeitenKSBG[time])
+    draw_point = (Weekdays[day], Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
-    draw_point = (Weekdays[day], AnfangszeitenKSBG[time]+14)
+    draw_point = (Weekdays[day], Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 def draw_reservation_today(starttime, endtime, teacher, time):
@@ -168,15 +156,15 @@ def draw_reservation_today(starttime, endtime, teacher, time):
     draw_point = (52, position[0])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher + endtime[:-3]
-    draw_point = (52, AnfangszeitenKSBG[time]+14)
+    draw_point = (52, Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
 def draw_reservation(starttime, endtime, teacher_short,  time, day):
     position = position_box(starttime=starttime, endtime=endtime)
     drawbw.rounded_rectangle([(Weekdays[day], position[0]), (Weekdays[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
-    draw_point = (Weekdays[day], AnfangszeitenKSBG[time])
+    draw_point = (Weekdays[day], Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher_short + endtime[:-3]
-    draw_point = (Weekdays[day], AnfangszeitenKSBG[time]+14)
+    draw_point = (Weekdays[day], Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
