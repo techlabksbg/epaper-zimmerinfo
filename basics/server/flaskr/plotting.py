@@ -56,5 +56,5 @@ def plot_matplotlib(zeit_werte, spannung_werte, path, mac):
   plt.figure(figsize=(display_breite/100, display_hoehe/100), dpi=100)
   plt.plot(zeit_werte, spannung_werte, 'black')
   plt.title('MAC-Address: ' + mac)
-  plt.savefig(path+'/diagram.png', bbox_inches='tight')
+  plt.savefig(path+'/diagram.png')
   plt.close()
