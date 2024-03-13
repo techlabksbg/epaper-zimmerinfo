@@ -61,7 +61,7 @@ def calc_firmware_update(firmware):
     path = "flaskr"+url_for('static', filename='firmware/')
     files = os.listdir(path)
 
-    latest_version = "0"
+    latest_version = firmware
 
     for file in files:
         if not file.endswith('.bin'):
@@ -74,6 +74,8 @@ def calc_firmware_update(firmware):
         if (version > firmware):
             latest_version = max(latest_version, version)
         
+    if (latest_version == firmware):
+        return -1
     return latest_version
 
 
