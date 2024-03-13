@@ -12,9 +12,9 @@
 #include "firmware-version.h"
 
 RTC_DATA_ATTR int nocon=0;
-RTC_DATA_ATTR char[20] bildhash;
+RTC_DATA_ATTR char bildhash[20];
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
-String firmware = "20240313-0923"
+
 void goToSleep(long long time);
 void errorScreen(String fehler, UBYTE *BlackImage, int ScreenSize);
 
@@ -76,7 +76,11 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
       }
     }
     if (key=="bildhash"){
-      bildhash=value
+      if (value.length()<20) {
+        strncpy(bildhash, value.c_str(), 19);
+        Serial.print("Set bildhash to ");
+        Serial.println(value);
+      }
     }
     if (key == "update") {
       httpsOTA(value);
@@ -114,7 +118,7 @@ void setup(){
   printf("EPD_7IN5B_V2_test Demo\r\n");
   DEV_Module_Init();
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
-    bildhash=0
+    bildhash[0]=0;
   }
 
   printf("e-Paper Init and Clear...\r\n");
