@@ -12,7 +12,7 @@
 #include "firmware-version.h"
 
 
-RTC_DATA_ATTR int nocon=0;
+RTC_DATA_ATTR int nocon;
 RTC_DATA_ATTR char bildhash[20];
 // Also see https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
@@ -78,6 +78,7 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
     Serial.printf("key = %s, value=%s pos=%d, keyende=%d, zeilenende=%d\n", key.c_str(), value.c_str(), pos, keyende, zeilenende);
     pos = zeilenende+1;
     if (key == "sleep"){
+      nocon=0;
       goToSleep(value.toInt());
     }
     if (key == "bild"){
@@ -141,6 +142,7 @@ void setup(){
   DEV_Module_Init();
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
     bildhash[0]=0;
+    nocon=0;
   }
 
   printf("e-Paper Init and Clear...\r\n");
@@ -160,18 +162,15 @@ void setup(){
   initWiFi();
   if (WiFi.status() !=WL_CONNECTED) {
     errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
-    goToSleep(60*(1<<nocon));
   }
   else{
   String mac = WiFi.macAddress();
-  nocon = 0;
   flash(5, 10, 100);
-  int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE, (char *)BlackImage, Imagesize*2);
+  int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
   BlackImage[len]=0;
   String response = String((char*)BlackImage);
   flash(5,10,100);
   antwort(response, BlackImage, Imagesize);
-  goToSleep(120);
   }
 }
 
