@@ -5,11 +5,11 @@ import grid_data as gd
 import grid_draw as gr
 import grid_data as gd
 from lxml import etree
-from event import Event
-from week import Week
-from day import Day
+from datatype_analisis.event import Event
+from datatype_analisis.week import Week
+from datatype_analisis.day import Day
 from datetime import date
-import deutsch
+import datatype_analisis.deutsch
 
 def get_text_dimensions(text_string, font):
     # https://stackoverflow.com/a/46220683/9263761
