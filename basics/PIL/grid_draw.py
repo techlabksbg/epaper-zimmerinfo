@@ -39,8 +39,8 @@ def grid_drawer(drawbw, current_week_day):
     y = 52
     lesso_times = ["7:40", "8:34", "9:28", "10:30", "11:15", "12:14", "13:04", "13:55", "14:49", "15:43", "16:33", "17:23", "18:15", "19:05", "19:55"]
     weekend_times = ["07:45", "08:40", "09:35", "10:40", "11:35", "12:25", "13:15", "14:05", "14:55"]
-    day = "M"
-    if day == "Samstag":
+    
+    if current_week_day == 5:
         for time in weekend_times:
             draw_point = (2.4, y)
             drawbw.multiline_text(draw_point, text=time, font=font, fill=0)
