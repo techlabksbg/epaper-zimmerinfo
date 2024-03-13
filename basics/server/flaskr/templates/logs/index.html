@@ -20,6 +20,7 @@
           {% endif %}
         </div>
         <a class="action" href="{{ url_for('logs.log', id=mac['macid']) }}">More Battery Information</a>
+        <a class="action" href="{{ url_for('logs.upload_image', id=mac['macid']) }}">Upload Image</a>
       </header>
     </article>
     {% if not loop.last %}

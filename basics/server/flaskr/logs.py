@@ -2,6 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
@@ -122,3 +123,26 @@ def create():
 
     return render_template('logs/create.html')
 
+@bp.route('/<int:id>/upload', methods=('GET', 'POST'))
+@login_required
+def upload_image(id):
+    if request.method == 'POST':
+        # Check if the POST request has the file part
+        if 'image' not in request.files:
+            return 'No file part'
+
+        image = request.files['image']
+
+        # If the user does not select a file, the browser may also
+        # submit an empty part without filename
+        if image.filename == '':
+            return 'No selected file'
+
+        # Save the image to a folder
+        filename = os.path.join("flaskr/static/uploads", secure_filename(image.filename))
+        print(filename)
+        image.save(filename)
+
+        return render_template('logs/upload_success.html', filename=image.filename)
+
+    return render_template('logs/upload_form.html', id=id)

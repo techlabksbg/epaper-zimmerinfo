@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Upload Status: {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<h1>Successful</h1>
+<img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Image" width="900px">
+<p>Filename: {{ filename }}</p>
+
+{% endblock %}
