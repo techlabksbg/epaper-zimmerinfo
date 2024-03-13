@@ -49,11 +49,6 @@ void initWiFi() {
     flash(1, 10, 0);
     seconds--;
   }
-  Serial.println(WiFi.localIP());
-  if (WiFi.status() !=WL_CONNECTED) {
-    errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
-    goToSleep(60*(1<<nocon));
-  }
 }
 
 //from basics/esp32/batterie_messung
@@ -163,6 +158,11 @@ void setup(){
   
 
   initWiFi();
+  if (WiFi.status() !=WL_CONNECTED) {
+    errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
+    goToSleep(60*(1<<nocon));
+  }
+  else{
   String mac = WiFi.macAddress();
   nocon = 0;
   flash(5, 10, 100);
@@ -172,6 +172,7 @@ void setup(){
   flash(5,10,100);
   antwort(response, BlackImage, Imagesize);
   goToSleep(120);
+  }
 }
 
 void loop(){}
