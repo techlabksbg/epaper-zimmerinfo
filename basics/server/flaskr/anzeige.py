@@ -55,25 +55,24 @@ def calc_image_update(macid, hash):
         roomid = 0
     return roomid, hash_db
 
-def calc_firmware_upadte(firmware):
+def calc_firmware_update(firmware):
+    if (firmware == None):
+        return -1
     path = "flaskr"+url_for('static', filename='firmware/')
     files = os.listdir(path)
-    firmware = int(firmware.replace('-', ''))
 
-    latest_version = -1
-    int_latest_version = -1
+    latest_version = "0"
 
     for file in files:
         if not file.endswith('.bin'):
             continue
 
         version = file.split('.')[0]
-        int_version = int(version.replace('-', ''))
+        print(version)
+        print(firmware)
 
-        if (int_version > firmware):
-            if (int_latest_version < int_version):
-                latest_version = version
-                int_latest_version = int_version
+        if (version > firmware):
+            latest_version = max(latest_version, version)
         
     return latest_version
 
@@ -107,7 +106,7 @@ def index():
 
     roomid, hash_db = calc_image_update(macid, hash)
 
-    update_firmware = calc_firmware_upadte(firmware)
+    update_firmware = calc_firmware_update(firmware)
 
     # generate graph if needed
     if (roomid == 0):
