@@ -82,7 +82,7 @@ def minutenrechner(time):
 
     t1 = sum(i*j for i, j in zip(map(int, my_time.split(':')), factors))
     
-    print(t1)
+    #print(t1)
     return t1
 
 minutenrechner("14:55:00")
@@ -108,28 +108,37 @@ def position_box(starttime, endtime):
     starttime_minute = minutenrechner(starttime)
     endtime_minute = minutenrechner(endtime)
     for time in (lesson_pixel):
-        #print(time)
         index = lesson_pixel.index(time)
-        #print(index)
-        #print(lesson_pixel[index])
         if lesson_pixel[index][0]<starttime_minute:
             pass
         else:
             timedifference = lesson_pixel[index-1][0]-starttime_minute
             pixeloffset = int(timedifference*0.644444)
             start_pixel = lesson_pixel[index-1][1] + pixeloffset
-
-        
-    for time in enumerate(lesson_pixel):
+            break
+    for time in (lesson_pixel):
+        index = lesson_pixel.index(time)
         if lesson_pixel[index][0] < endtime_minute:
             pass
         else:
             timedifference = lesson_pixel[index-1][0]-endtime_minute
             pixeloffset = int(timedifference*0.644444)
+<<<<<<< HEAD
             print(pixeloffset)
+=======
+>>>>>>> 0d6239b54639ca98a97c23687a3bfc41f998a716
             end_pixel = lesson_pixel[index-1][1] + pixeloffset
+            break
+    if end_pixel - start_pixel < 24:
+        end_pixel = start_pixel + 24
+    coordinates = [start_pixel, end_pixel]
     print("Startpixel,", start_pixel, end_pixel)
+<<<<<<< HEAD
 position_box("07:47:00", "08:45:00")
+=======
+    return coordinates
+position_box("015:50:00", "19:35:00")
+>>>>>>> 0d6239b54639ca98a97c23687a3bfc41f998a716
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day):
     info = subject_short + " " + Class
@@ -161,19 +170,21 @@ def draw_reservation_at_lessontime(starttime, teacher, time, day):
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 def draw_reservation_today(starttime, endtime, teacher, time):
-    drawbw.rounded_rectangle([(43, AnfangszeitenKSBG[time]), (240, AnfangszeitenKSBG[time])] , fill ="white", radius=7, outline ="black", width = 1) 
-
-    info = "reservation" + starttime
-    draw_point = (52, AnfangszeitenKSBG[time])
+    position = position_box(starttime=starttime, endtime=endtime)
+    drawbw.rounded_rectangle([(43, position[0]), (240, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
+    info = "reservation" + starttime[:-3]
+    draw_point = (52, position[0])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    info = teacher + endtime
+    info = teacher + endtime[:-3]
     draw_point = (52, AnfangszeitenKSBG[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
 def draw_reservation(starttime, endtime, teacher_short,  time, day):
-    info = "reservation" + starttime
+    position = position_box(starttime=starttime, endtime=endtime)
+    drawbw.rounded_rectangle([(Weekdays[day], position[0]), (Weekdays[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
+    info = "reservation" + starttime[:-3]
     draw_point = (Weekdays[day], AnfangszeitenKSBG[time])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
-    info = teacher_short + endtime
+    info = teacher_short + endtime[:-3]
     draw_point = (Weekdays[day], AnfangszeitenKSBG[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
