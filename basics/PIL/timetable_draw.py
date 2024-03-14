@@ -48,6 +48,7 @@ for di, day in enumerate(week.days):  # di: Index, day
         print(event_datum)
         text = event.text
         print(text)
+        print(type(text))
 
         heute_datum = date.today() #Datum im format "YYYY-MM-DD"
         print(heute_datum)

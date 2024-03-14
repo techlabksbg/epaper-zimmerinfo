@@ -120,6 +120,8 @@ def position_box_normal(starttime, endtime, anfangszeiten):
 def position_box_isme(starttime, endtime, anfangszeiten):
     starttime_minute = minutenrechner(starttime)
     endtime_minute = minutenrechner(endtime)
+    start_pixel = 0
+    end_pixel = 0
     for time in (isme_lesson_pixel):
         index = isme_lesson_pixel.index(time)
         if isme_lesson_pixel[index][0]<starttime_minute:
