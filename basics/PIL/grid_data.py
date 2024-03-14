@@ -120,6 +120,8 @@ def position_box_normal(starttime, endtime, anfangszeiten):
 def position_box_isme(starttime, endtime, anfangszeiten):
     starttime_minute = minutenrechner(starttime)
     endtime_minute = minutenrechner(endtime)
+    start_pixel = 0
+    end_pixel = 0
     for time in (isme_lesson_pixel):
         index = isme_lesson_pixel.index(time)
         if isme_lesson_pixel[index][0]<starttime_minute:
@@ -207,15 +209,18 @@ def draw_reservation_today(drawbw, starttime, endtime, teacher, time, Anfangszei
     draw_point = (52, Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
-def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfangszeiten, font):
-    position = position_box_isme(starttime=starttime, endtime=endtime, anfangszeiten = Anfangszeiten)
+def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfangszeiten, current_weekday, font):
+    if current_weekday != 5:
+        position = position_box_normal(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
+    else:
+        position = position_box_isme(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
     drawbw.rounded_rectangle([(Wochentage[day], position[0]), (Wochentage[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
     print(Anfangszeiten)
-    draw_point = (Wochentage[day], Anfangszeiten[time])
+    draw_point = (Wochentage[day], position[0])
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher_short + endtime[:-3]
-    draw_point = (Wochentage[day], Anfangszeiten[time]+14)
+    draw_point = (Wochentage[day], position[0]+14)
     drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
@@ -227,6 +232,10 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
         subject = " "
     if subject_short == None:
         subject_short = " "
+    if teacher_short == None:
+        teacher_short = " "
+    if teacher == None:
+        teacher = " "
     if "2024-03-18" == str(event_date):
         if text != "Reserviert":
             draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, anfangszeiten, font)
@@ -238,19 +247,20 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
 
 
     else:
+        print(text)
         if text != "Reserviert":
             draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
                 draw_reservation_at_lessontime(drawbw, starttime, teacher, time, weekday, anfangszeiten, font)
             else:
-                draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, font)
+                draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, current_weekday, font)
 
     bw.save("bw.png", "PNG")
     rw.save("rw.png", "PNG")
 
-    rgb = init.combine_bw_rw(bw, rw)
-    rgb.show()
+    #rgb = init.combine_bw_rw(bw, rw)
+    #rgb.show()
 
     
 
