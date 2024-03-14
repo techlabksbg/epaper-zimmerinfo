@@ -138,7 +138,6 @@ def position_box_isme(starttime, endtime, anfangszeiten):
     coordinates = [start_pixel, end_pixel]
     print("Startpixel,", start_pixel, end_pixel)
     return coordinates
-position_box("015:50:00", "19:35:00")
 
 def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
     if weekday == 5:
@@ -146,6 +145,15 @@ def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
     else:
         anfangszeiten = AnfangszeitenKSBG
     return anfangszeiten
+
+def battery_indicator(battery_percent):
+    drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
+
+    y = 792-(battery_percent*24)
+
+    drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+
+    drawbw.rectangle([(764,9),(765,11)])
 
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day, Anfangszeiten):
     info = subject_short + " " + Class
@@ -178,9 +186,9 @@ def draw_reservation_at_lessontime(starttime, teacher, time, day, Anfangszeiten)
 
 def draw_reservation_today(starttime, endtime, teacher, time, Anfangszeiten, current_weekday):
     if current_weekday != 5:
-        position = position_box_normal(starttime=starttime, endtime=endtime, Anfangszeiten)
+        position = position_box_normal(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
     else:
-        position = position_box_isme(starttime=starttime, endtime=endtime, Anfangszeiten)
+        position = position_box_isme(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
     drawbw.rounded_rectangle([(43, position[0]), (240, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
     draw_point = (52, position[0])
@@ -190,7 +198,7 @@ def draw_reservation_today(starttime, endtime, teacher, time, Anfangszeiten, cur
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
 
 def draw_reservation(starttime, endtime, teacher_short,  time, day, Anfangszeiten):
-    position = position_box(starttime=starttime, endtime=endtime, Anfangszeiten)
+    position = position_box(starttime=starttime, endtime=endtime, anfangszeiten = Anfangszeiten)
     drawbw.rounded_rectangle([(Weekdays[day], position[0]), (Weekdays[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
     draw_point = (Weekdays[day], Anfangszeiten[time])
@@ -200,24 +208,24 @@ def draw_reservation(starttime, endtime, teacher_short,  time, day, Anfangszeite
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
 
-def draw_data(current_weekday, current_date, event_date, starttime subject, Class, teacher, aditional_info, time, anfangszeiten):
+def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, anfangszeiten, subject_short, teacher_short, weekday, reservator):
     anfangszeiten = check_isme_or_not(current_weekday)
     if current_date == event_date:
-        if != "Reservation":
+        if reservator != None:
             draw_lesson_today(subject, Class, teacher, aditional_info, time, anfangszeiten)
         else:
             if starttime in anfangszeiten:
-                draw_reservation_at_lessontime_today(starttime, teacher, time, Anfangszeiten)
+                draw_reservation_at_lessontime_today(starttime, teacher, time, anfangszeiten)
             else:
-                draw_reservation_today(starttime, endtime, teacher, time, Anfangszeiten, current_weekday)
+                draw_reservation_today(starttime, endtime, teacher, time, anfangszeiten, current_weekday)
 
 
     else:
-        if != "Reservation":
-            draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day, anfangszeiten)
+        if reservator != None:
+            draw_lesson(subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten)
         else:
             if starttime in anfangszeiten:
-                draw_reservation_at_lessontime(starttime, teacher, time, Anfangszeiten)
+                draw_reservation_at_lessontime(starttime, teacher, time, anfangszeiten)
             else:
-                draw_reservation(starttime, endtime, teacher, time, Anfangszeiten, current_weekday)
+                draw_reservation(starttime, endtime, teacher, time, anfangszeiten, current_weekday)
 

@@ -29,14 +29,14 @@ week = Week(events, date.today())
 
 #make image and grid
 bw = initializer.initialise_immage()
-gr.grid_drawer(bw[0], 5, "h21")
+gr.grid_drawer(bw[0], 5, "h21", "Ivo Bloeschlinger")
 bw[1].save("bw.png", "PNG")
 bw[1].show()
 
 #insert data into immage
 for di, day in enumerate(week.days):  # di: Index, day
     for event in day.events:
-        time = str(event.start_datetime.time()) #Format "00:00:00"
+        start_time = str(event.start_datetime.time()) #Format "00:00:00"
         fachkuerzel = event.fachkuerzel 
         klasse = event.klassekurz
         print(fachkuerzel)
@@ -52,4 +52,9 @@ for di, day in enumerate(week.days):  # di: Index, day
         heute_datum = date.today() #Datum im format "YYYY-MM-DD"
         print(heute_datum)
         heute_wochentag = date.today().weekday()
+        reservator = event.reservator
+        print(reservator)
+
+        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time, anfangszeiten, subject_short, teacher_short = lehrerkuerzel, weekday, reservator)
+
 

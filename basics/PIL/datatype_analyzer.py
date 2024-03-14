@@ -34,3 +34,4 @@ for di, day in enumerate(week.days):  # di: Index, day
         heute_wochentag = date.today().weekday()
         print(heute_wochentag)
         
+        print("Reservation",event.reservator)
