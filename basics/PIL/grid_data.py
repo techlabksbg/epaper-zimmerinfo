@@ -79,14 +79,6 @@ isme_lesson_pixel = [
     [895,277]
 ]
 
-def head_draw(drawbw, zimmernummer, room_teacher):
-    draw_point = (7,27)
-    drawbw.multiline_text(draw_point, text=zimmernummer , font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), fill=0)
-
-    draw_point = (7,27)
-    drawbw.multiline_text(draw_point, text=room_teacher , font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), fill=0)
-
-
 
 def minutenrechner(time):
     my_time = time
@@ -193,6 +185,7 @@ def draw_reservation_at_lessontime_today(drawbw, starttime, teacher, time, Anfan
 def draw_reservation_at_lessontime(drawbw, starttime, teacher, time, day, Anfangszeiten, font):
     draw_point = (Wochentage[day], Anfangszeiten[time])
     drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
+    drawbw.multiline_text((400, 200), text="Reservation", font=font, fill=0)
     draw_point = (Wochentage[day], Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
@@ -221,10 +214,11 @@ def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfa
     drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
-def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font):
+def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw):
     anfangszeiten = check_isme_or_not(weekday)
-    if current_date == event_date:
-        if reservator != None:
+
+    if "2024-03-18" == str(event_date):
+        if reservator == None:
             draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
@@ -234,11 +228,14 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
 
 
     else:
-        if reservator != None:
+        if reservator == None:
             draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
                 draw_reservation_at_lessontime(drawbw, starttime, teacher, time, weekday, anfangszeiten, font)
             else:
                 draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, font)
+
+    bw.save("bw.png", "PNG")
+    
 

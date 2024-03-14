@@ -30,6 +30,7 @@ for di, day in enumerate(week.days):  # di: Index, day
         print(event.lehrerkuerzel)
         print(event.start_datetime.date().weekday())
         print(event.start_datetime.date())
+        print(type(event.start_datetime.date()))
 
         heute_datum = date.today()
         print(heute_datum)

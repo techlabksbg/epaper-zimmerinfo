@@ -22,8 +22,7 @@ week = Week(events, date.today())
 
 #make image and grid
 bw = initializer.initialise_immage()
-gr.grid_drawer(bw[0], 5, "h21", "Ivo Bloeschlinger")
-gd.head_draw(bw[0], "H21", "Ivo Bloeschinger")
+gr.grid_drawer(bw[0], 0, "H21", "Ivo Bloeschlinger")
 gd.battery_indicator(0.3, bw[0])
 bw[1].save("bw.png", "PNG")
 bw[1].show()
@@ -53,6 +52,7 @@ for di, day in enumerate(week.days):  # di: Index, day
         reservator = event.reservator
         print(reservator)
 
-        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime = end_time, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time = start_time, subject_short = fachkuerzel, teacher_short = lehrerkuerzel, weekday = wochentag, reservator = None, drawbw=bw[0], font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11))
+        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime = end_time, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time = start_time, subject_short = fachkuerzel, teacher_short = lehrerkuerzel, weekday = wochentag, reservator = None, drawbw=bw[0], font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), bw = bw[1])
+        bw[1].show()
 
 

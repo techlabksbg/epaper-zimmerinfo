@@ -68,7 +68,7 @@ def grid_drawer(drawbw, current_week_day, roomnumber, teacher):
     # Battery indicator
     font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 
-    draw_point = (45,4)
+    draw_point = (7,4)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
     
