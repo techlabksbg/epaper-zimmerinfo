@@ -7,7 +7,7 @@ from time import sleep
 from operator import mul
 import grid_data as gd
 
-def grid_drawer(drawbw, current_week_day, roomnumber):
+def grid_drawer(drawbw, current_week_day, roomnumber, teacher):
     # Draw fat horizontal lines
     # Weekdays and Hours Separator
     drawbw.line([(0, 45), (800, 45)] , fill ="black", width = 2) 
@@ -69,7 +69,7 @@ def grid_drawer(drawbw, current_week_day, roomnumber):
     font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=11)
 
     draw_point = (45,4)
-    drawbw.multiline_text(draw_point, text=gd.teacher, font=font, fill=0)
+    drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
     drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
 
