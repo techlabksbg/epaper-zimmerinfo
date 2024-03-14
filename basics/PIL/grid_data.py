@@ -1,5 +1,7 @@
 from operator import mul
 from PIL import Image, ImageFont, ImageDraw, ImageColor
+from event import Event
+
 
 AnfangszeitenKSBG = {
     "07:40:00" : 48,
@@ -75,6 +77,15 @@ isme_lesson_pixel = [
     [845,248],
     [895,277]
 ]
+
+def head_draw():
+    draw_point = (7,27)
+    drawbw.multiline_text(draw_point, text="H21" , font=font, fill=0)
+
+    draw_point = (7,27)
+    drawbw.multiline_text(draw_point, text="Dr. Ivo Boeschinger" , font=font, fill=0)
+
+
 
 def minutenrechner(time):
     my_time = time
