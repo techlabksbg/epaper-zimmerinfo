@@ -1,5 +1,5 @@
 from PIL import Image, ImageOps
-import io
+import numpy as np
 
 def newBWimage():
     """
@@ -32,37 +32,47 @@ def bw_rw2bin(bw, rw):
         rw = rw.convert("1")
     return bytes(bw.tobytes())+bytes(rw.tobytes())
 
-"""
-def ditherRGB(image):
-    colors = [(0,0,0), (255,0,0), (255,255,255)]
+def dither_to_bin_and_rgb(image):
     if (image.size!=(800,480)):
         image = resizeAndCenter(image)
     if (image.format!="RGB"):
         image = image.convert("RGB")
 
+    positions = [[1,0],[-1,1],[0,1],[1,1]]
+    weights = [7/16, 3/16, 5/16, 1/16]
+    colors = np.array([[0,0,0], [1,0,0], [1,1,1]])
+   
+    data = np.array(image)/255
+    res = np.copy(data)
+    bw = newBWimage()
+    bwpixels = bw.load()
+    rw = newBWimage()
+    rwpixels = rw.load()
+    for y in range(480):
+        for x in range(800):
+            d = [np.linalg.norm(res[y,x]-cc) for cc in colors]
+            i = d.index(min(d))
+            if (i==0):
+                bwpixels[x,y]=0
+            if (i==1):
+                rwpixels[x,y]=0
+            res[y,x] = colors[i]
+            e = data[y,x]-res[y,x]
+            for i in range(len(positions)):
+                a = x+positions[i][0]
+                b = y+positions[i][1]
+                if (a>=0 and a<800 and b<480):
+                    res[b,a]+=e*weights[i]
+    res*=255
+    return bw_rw2bin(bw, rw), Image.fromarray(res.astype(np.uint8))
+                    
     
-    def dist(c1, c2):
-        
-
-    for y in range(800):
-        for x in range(480):
-
-
-    rgb = Image.new("RGB", rw.size, color=(255,255,255))
-    data = np.array(rgb)   # "data" is a height x width x 3 numpy array
-    bwdata = np.array(bw)
-    rwdata = np.array(rw)
-    data[bwdata==False] = (0,0,0)
-    data[rwdata==False] = (255,0,0)
-    return Image.fromarray(data)
-
-        
-"""
+#def bin_to_rgb(bin):
 
 
 if __name__ == "__main__":
-    bw = Image.open("bw.png")
-    rw = Image.open("rw.png")
+    img = Image.open("nemo.jpg")
+    bin,rgb = dither_to_bin_and_rgb(img)
     with open("data.bin", "wb") as f:
-        bytes = bw_rw2bin(bw,rw)
-        f.write(bytes)
+        f.write(bin)
+    rgb.save("data.png")
