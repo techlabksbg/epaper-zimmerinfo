@@ -12,10 +12,14 @@ class Event:
         self.klasse: str | None = tree.find('.//klasse').text
         if self.klasse:
             self.klassekurz: str = self.klasse.replace("*","")
+        else:
+            self.klassekurz = None
         self.fachkuerzel: str = tree.find('.//fachkuerzel').text
         self.lehrerkuerzelname: str | None = tree.find('.//lehrerkuerzelname').text
         if self.lehrerkuerzelname:
             self.lehrername = self.lehrerkuerzelname[0:self.lehrerkuerzelname.find("(")]
+        else:
+            self.lehrername = None
         self.lehrerkuerzel: str = tree.find('.//lehrerkuerzel').text
         self.reservator: str = tree.find('.//reservator').text
 

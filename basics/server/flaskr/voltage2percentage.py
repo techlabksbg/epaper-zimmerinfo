@@ -17,7 +17,7 @@ def volatage2percentage(voltage):
     [3.0, 0.00]]
 
     if voltage>4.0:
-        return 1.0;
+        return 1.0
 
     for perc in percentiles:
         if voltage>perc[0]:

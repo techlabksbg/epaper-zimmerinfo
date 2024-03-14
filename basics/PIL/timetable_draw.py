@@ -46,6 +46,8 @@ for di, day in enumerate(week.days):  # di: Index, day
         print(wochentag)
         event_datum = event.start_datetime.date() #Datum im format "YYYY-MM-DD"
         print(event_datum)
+        text = event.text
+        print(text)
 
         heute_datum = date.today() #Datum im format "YYYY-MM-DD"
         print(heute_datum)
@@ -53,7 +55,7 @@ for di, day in enumerate(week.days):  # di: Index, day
         reservator = event.reservator
         print(reservator)
 
-        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime = end_time, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time = start_time, subject_short = fachkuerzel, teacher_short = lehrerkuerzel, weekday = wochentag, reservator = None, drawbw=bw[0], font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), bw = bw[1])
+        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime = end_time, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time = start_time, subject_short = fachkuerzel, teacher_short = lehrerkuerzel, weekday = wochentag, reservator = None, drawbw=bw[0], font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), bw = bw[1], text = text)
         bw[1].show()
 
 

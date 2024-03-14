@@ -214,11 +214,16 @@ def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfa
     drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
-def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw):
+def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw, text):
     anfangszeiten = check_isme_or_not(weekday)
-
+    if Class == None:
+        Class = " "
+    if subject == None:
+        subject = " "
+    if subject_short == None:
+        subject_short = " "
     if "2024-03-18" == str(event_date):
-        if reservator == None:
+        if text != "Reserviert":
             draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
@@ -228,7 +233,7 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
 
 
     else:
-        if reservator == None:
+        if text != "Reserviert":
             draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
