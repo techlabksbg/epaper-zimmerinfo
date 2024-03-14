@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}Upload Status: {% endblock %}</h1>
+  <a class="action" href="{{ url_for('logs.index') }}">Index</a>
 {% endblock %}
 
 {% block content %}

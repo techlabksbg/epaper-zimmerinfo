@@ -5,9 +5,10 @@ from flask import current_app
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
-from flaskr.auth import login_required
+from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
+from flaskr.voltage2percentage import voltage2percentage
 from flask import request
 
 from datetime import datetime # Import datetime module
@@ -42,9 +43,9 @@ def index():
 
         battery = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (mac['id'],)).fetchone()
         if (battery == None):
-            battery = "No Battery Information available yet"
+            battery = None
         else:
-            battery = battery['volt']
+            battery = voltage2percentage(battery['volt'])*100
 
         new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery, 'macname':macname})
 
@@ -54,6 +55,9 @@ def index():
 def log(id):
     db = get_db()
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
+    volts = [dict(row) for row in volts]
+    for volt in volts:
+        volt['volt'] = voltage2percentage(volt['volt'])*100
 
     mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
     if (mac == None):
@@ -70,7 +74,7 @@ def log(id):
     return render_template('logs/log.html', volts=volts, mac=mac, room=room, id=str(id))
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
+@basic_auth.required
 def create():
     if request.method == 'POST':
         mac = request.form['mac']
@@ -128,7 +132,7 @@ def create():
     return render_template('logs/create.html')
 
 @bp.route('/<int:id>/upload', methods=('GET', 'POST'))
-@login_required
+@basic_auth.required
 def upload_image(id):
     if request.method == 'POST':
         # Check if the POST request has the file part

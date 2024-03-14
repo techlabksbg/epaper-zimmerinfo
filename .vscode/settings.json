@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./basics/xml2graphics"
+    ]
+}
