@@ -153,7 +153,7 @@ class NesaPilot:
             with open(new_datei, "wb") as f:
                 f.write(html.tostring(xml))
             # overwrite room.xml if they differ
-            if not os.path.isfile(datei) or filecmp.cmp(new_datei, datei):
+            if not os.path.isfile(datei) or not filecmp.cmp(new_datei, datei):
                 with open(datei, "wb") as f:
                     f.write(html.tostring(xml))
                 update_rooms.append(room)
