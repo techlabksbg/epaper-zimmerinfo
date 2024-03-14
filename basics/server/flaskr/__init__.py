@@ -37,9 +37,6 @@ def create_app(test_config=None):
     from . import logs
     app.register_blueprint(logs.bp)
 
-    from . import auth
-    app.register_blueprint(auth.bp)
-
     from . import anzeige
     app.register_blueprint(anzeige.bp)
 
