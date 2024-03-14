@@ -18,6 +18,8 @@ for di, day in enumerate(week.days):  # di: Index, day
         print(t)
         print(type(t))
         print(str(t))
+        t = event.end_datetime.time()
+        print(t)
         text = f"{event.fachkuerzel} {event.klassekurz}"
         print(type(event.fachkuerzel))
         print(type(event.klassekurz))

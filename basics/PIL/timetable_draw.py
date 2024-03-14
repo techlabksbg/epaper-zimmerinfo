@@ -12,13 +12,6 @@ import initializer
 import deutsch
 
 
-
-def initialize_image():
-    bw = Image.new("1", (800,480), color=1)
-    drawbw = ImageDraw.Draw(bw)
-    gd.grid_drawer(drawbw)
-    return bw
-
 #get the events from the file
 tree = etree.parse("H21.xml")
 events = []
@@ -37,6 +30,8 @@ bw[1].show()
 for di, day in enumerate(week.days):  # di: Index, day
     for event in day.events:
         start_time = str(event.start_datetime.time()) #Format "00:00:00"
+        print(start_time)
+        end_time = str(event.end_datetime.time())
         fachkuerzel = event.fachkuerzel 
         klasse = event.klassekurz
         print(fachkuerzel)
@@ -48,6 +43,7 @@ for di, day in enumerate(week.days):  # di: Index, day
         wochentag = event.start_datetime.date().weekday() #0=Montag, 6=Sonntag
         print(wochentag)
         event_datum = event.start_datetime.date() #Datum im format "YYYY-MM-DD"
+        print(event_datum)
 
         heute_datum = date.today() #Datum im format "YYYY-MM-DD"
         print(heute_datum)
@@ -55,6 +51,6 @@ for di, day in enumerate(week.days):  # di: Index, day
         reservator = event.reservator
         print(reservator)
 
-        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time, anfangszeiten, subject_short, teacher_short = lehrerkuerzel, weekday, reservator)
+        gd.draw_data(current_weekday = heute_wochentag, current_date = heute_datum, event_date = event_datum, starttime = start_time, endtime = end_time, subject = fachkuerzel, Class = klasse, teacher = lehrername, aditional_info = "", time = start_time, subject_short = fachkuerzel, teacher_short = lehrerkuerzel, weekday = wochentag, reservator = None, drawbw=bw[0], font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11))
 
 

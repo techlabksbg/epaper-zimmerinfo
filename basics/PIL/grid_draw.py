@@ -85,3 +85,5 @@ def grid_drawer(drawbw, current_week_day, roomnumber, teacher):
     # Room number
     draw_point = (7,27)
     drawbw.multiline_text(draw_point, text=roomnumber , font=font, fill=0)
+
+    return drawbw
