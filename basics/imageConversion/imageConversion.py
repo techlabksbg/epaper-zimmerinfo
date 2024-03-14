@@ -32,7 +32,7 @@ def bw_rw2bin(bw, rw):
         rw = rw.convert("1")
     return bytes(bw.tobytes())+bytes(rw.tobytes())
 
-def dither_to_bin(image):
+def dither_to_bin_and_rgb(image):
     if (image.size!=(800,480)):
         image = resizeAndCenter(image)
     if (image.format!="RGB"):
@@ -63,12 +63,16 @@ def dither_to_bin(image):
                 b = y+positions[i][1]
                 if (a>=0 and a<800 and b<480):
                     res[b,a]+=e*weights[i]
-   
-    return bw_rw2bin(bw, rw)
+    res*=255
+    return bw_rw2bin(bw, rw), Image.fromarray(res.astype(np.uint8))
                     
     
+#def bin_to_rgb(bin):
+
 
 if __name__ == "__main__":
-    img = Image.open("../dithering/flyagaric.jpg")
+    img = Image.open("nemo.jpg")
+    bin,rgb = dither_to_bin_and_rgb(img)
     with open("data.bin", "wb") as f:
-        f.write(dither_to_bin(img))
+        f.write(bin)
+    rgb.save("data.png")
