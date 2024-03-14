@@ -3,3 +3,4 @@ flaskr/static/macs/
 flaskr/static/rooms/
 flaskr/static/uploads/
 flaskr/static/firmware/
+flaskr/mysecrets.py
