@@ -2,7 +2,7 @@ from operator import mul
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from event import Event
 import initializer as init
-
+import io
 
 AnfangszeitenKSBG = {
     "07:40:00" : 48,
@@ -183,45 +183,45 @@ def draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, Anf
     draw_point = (52, Anfangszeiten[time]+14)
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     
-def draw_reservation_at_lessontime_today(drawbw, starttime, teacher, time, Anfangszeiten, font):
+def draw_reservation_at_lessontime_today(drawbw, starttime, teacher, time, Anfangszeiten, font, drawrw):
     draw_point = (52, Anfangszeiten[time])
-    drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
+    drawrw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
     draw_point = (52, Anfangszeiten[time]+14)
-    drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
-def draw_reservation_at_lessontime(drawbw, starttime, teacher, time, day, Anfangszeiten, font):
+def draw_reservation_at_lessontime(drawbw, starttime, teacher, time, day, Anfangszeiten, font, drawrw):
     draw_point = (Wochentage[day], Anfangszeiten[time])
-    drawbw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
-    drawbw.multiline_text((400, 200), text="Reservation", font=font, fill=0)
+    drawrw.multiline_text(draw_point, text="Reservation", font=font, fill=0)
+    drawrw.multiline_text((400, 200), text="Reservation", font=font, fill=0)
     draw_point = (Wochentage[day], Anfangszeiten[time]+14)
-    drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
-def draw_reservation_today(drawbw, starttime, endtime, teacher, time, Anfangszeiten, current_weekday, font):
+def draw_reservation_today(drawbw, starttime, endtime, teacher, time, Anfangszeiten, current_weekday, font, drawrw):
     if current_weekday != 5:
         position = position_box_normal(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
     else:
         position = position_box_isme(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
-    drawbw.rounded_rectangle([(43, position[0]), (240, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
+    drawrw.rounded_rectangle([(43, position[0]), (240, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
     draw_point = (52, position[0])
-    drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher + endtime[:-3]
     draw_point = (52, Anfangszeiten[time]+14)
-    drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=info, font=font, fill=0)
 
-def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfangszeiten, current_weekday, font):
+def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfangszeiten, current_weekday, font, drawrw):
     if current_weekday != 5:
         position = position_box_normal(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
     else:
         position = position_box_isme(starttime=starttime, endtime=endtime, anfangszeiten=Anfangszeiten)
-    drawbw.rounded_rectangle([(Wochentage[day], position[0]), (Wochentage[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
+    drawrw.rounded_rectangle([(Wochentage[day], position[0]), (Wochentage[day]+108, position[1])] , fill ="white", radius=7, outline ="black", width = 1) 
     info = "reservation" + starttime[:-3]
     print(Anfangszeiten)
     draw_point = (Wochentage[day], position[0])
-    drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher_short + endtime[:-3]
     draw_point = (Wochentage[day], position[0]+14)
-    drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
+    drawrw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
 def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw, text, drawrw, rw):
@@ -241,9 +241,9 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
             draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
-                draw_reservation_at_lessontime_today(drawbw, starttime, teacher, time, anfangszeiten, font)
+                draw_reservation_at_lessontime_today(drawbw, starttime, teacher, time, anfangszeiten, font, drawrw)
             else:
-                draw_reservation_today(drawbw, starttime, endtime, teacher, time, anfangszeiten, current_weekday, font)
+                draw_reservation_today(drawbw, starttime, endtime, teacher, time, anfangszeiten, current_weekday, font, drawrw)
 
 
     else:
@@ -252,15 +252,17 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
             draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
-                draw_reservation_at_lessontime(drawbw, starttime, teacher, time, weekday, anfangszeiten, font)
+                draw_reservation_at_lessontime(drawbw, starttime, teacher, time, weekday, anfangszeiten, font, drawrw)
             else:
-                draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, current_weekday, font)
+                draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, current_weekday, font, drawrw)
 
     bw.save("bw.png", "PNG")
     rw.save("rw.png", "PNG")
 
-    #rgb = init.combine_bw_rw(bw, rw)
-    #rgb.show()
+    rgb = bytes(bw.tobytes())+bytes(rw.tobytes())
+    with open ("datargb.bin", "wb") as f:
+        f.write(rgb)
+
 
     
 
