@@ -1,23 +1,18 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
-from flask_basicauth import BasicAuth
 from werkzeug.exceptions import abort
 from datetime import datetime
 
-from flaskr.auth import login_required
+from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.misc import times
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
-from flaskr.misc import xml_server
 from flask import request
 
-import flaskr.mysecrets as mysecrets
-
 import os
-import requests
 
 bp = Blueprint('anzeige', __name__)
 
@@ -47,16 +42,6 @@ def calc_image_update(macid, hash):
     roomid = db.execute('SELECT roomid FROM mac WHERE id = ?', (macid,)).fetchone()[0]
     hash_db = 0
     if (roomid != None):
-        roomname = db.execute('SELECT roomname FROM room WHERE id = ?', (roomid,)).fetchone()[0]
-        xml = requests.get(f"{xml_server}?roomname={roomname}",  auth = (mysecrets.login, mysecrets.password)).content
-
-        with open(f"flaskr/static/rooms/{roomid}/data.xml", 'wb') as f:
-            f.write(xml)
-            #hash_db = get_hash(roomid)
-        
-        #with open(f"flaskr/static/rooms/{roomid}/data.bin", 'wb') as f:
-        #    f.write(b'\0' * 96*1024)
-        
         hash_db = get_hash(roomid)
 
         if (hash_db == hash):
@@ -88,13 +73,11 @@ def calc_firmware_update(firmware):
         return -1
     return latest_version
 
-
 @bp.route('/anzeige')
 def index():
     mac = request.args.get('mac')
     volt = request.args.get('volt')
     firmware = request.args.get('firmware')
-    print(firmware)
     hash = request.args.get('hash')
 
     db = get_db()
@@ -128,3 +111,21 @@ def index():
     sleep_time = 120 # for testing purposes
 
     return render_template('anzeige/index.html', firmware=update_firmware, roomid=roomid, macid=macid, sleep_time=sleep_time, hash=hash_db)
+
+@bp.route('/xml', methods=['POST', 'GET'])
+@basic_auth.required
+def xml():
+    if (request.method == 'POST'):
+        # get the data from the request
+        roomname = request.args.get('roomname')
+        xmldata = request.files['file']
+
+        db = get_db()
+        roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
+        xmldata.save(f"flaskr/static/rooms/{roomid[0]}/data.xml")
+    else:
+        db = get_db()
+        roomnames = db.execute('SELECT roomname FROM room').fetchall()
+        roomnames = [str(name[0])+"\n"for name in roomnames]
+        roomnames = "".join(roomnames)
+        return roomnames

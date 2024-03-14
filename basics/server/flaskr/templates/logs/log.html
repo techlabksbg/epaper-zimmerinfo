@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}Battery of MAC-Address: {{mac}}{% if not room == None%}, Room {{room}}{%endif%}{% endblock %}</h1>
+  <a class="action" href="{{ url_for('logs.index') }}">Index</a>
 {% endblock %}
 
 {% block content %}

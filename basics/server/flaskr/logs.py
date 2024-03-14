@@ -4,7 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
-from flaskr.auth import login_required
+from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
 from flask import request
@@ -67,7 +67,7 @@ def log(id):
     return render_template('logs/log.html', volts=volts, mac=mac, room=room, id=str(id))
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
+@basic_auth.required
 def create():
     if request.method == 'POST':
         mac = request.form['mac']
@@ -124,7 +124,7 @@ def create():
     return render_template('logs/create.html')
 
 @bp.route('/<int:id>/upload', methods=('GET', 'POST'))
-@login_required
+@basic_auth.required
 def upload_image(id):
     if request.method == 'POST':
         # Check if the POST request has the file part
