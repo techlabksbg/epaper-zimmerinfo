@@ -42,6 +42,9 @@ def calc_image_update(macid, hash):
     roomid = db.execute('SELECT roomid FROM mac WHERE id = ?', (macid,)).fetchone()[0]
     hash_db = 0
     if (roomid != None):
+        if (not os.path.isfile("flaskr"+url_for('static', filename=f'rooms/{roomid}/data.bin'))):
+            roomid = 0
+            return roomid, hash_db
         hash_db = get_hash(roomid)
 
         if (hash_db == hash):
@@ -123,6 +126,9 @@ def xml():
         db = get_db()
         roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
         xmldata.save(f"flaskr/static/rooms/{roomid[0]}/data.xml")
+        with open(f"flaskr/static/rooms/{roomid[0]}/data.bin", "wb") as f:
+            f.write(b'0')
+        return "OK"
     else:
         db = get_db()
         roomnames = db.execute('SELECT roomname FROM room').fetchall()

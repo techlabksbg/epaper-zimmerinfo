@@ -148,16 +148,19 @@ class NesaPilot:
             print(f"--> XML-Daten für Raum {room} laden... <--")
             xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
             # Save xml-Document
-            datei = f"roomdata/{room}_new.xml"
-            with open(datei, "wb") as f:
+            new_datei = f"roomdata/{room}_new.xml"
+            datei = f"roomdata/{room}.xml"
+            with open(new_datei, "wb") as f:
                 f.write(html.tostring(xml))
             # overwrite room.xml if they differ
-            if (not filecmp.cmp(f"roomdata/{room}_new.xml", f"roomdata/{room}.xml")):
-                datei = f"roomdata/{room}.xml"
+            if not os.path.isfile(datei) or filecmp.cmp(new_datei, datei):
                 with open(datei, "wb") as f:
                     f.write(html.tostring(xml))
                 update_rooms.append(room)
-            print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
+                print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
+            else:
+                print(f"--> {datei} hat sich nicht geändert. 3 Sekunden warten... <--")
+            os.remove(new_datei)
             time.sleep(3)
         return update_rooms
 
@@ -175,4 +178,3 @@ if __name__== "__main__":
     for room in roomnames:
         datei = f"roomdata/{room}.xml"
         requests.post(f"{site}?roomname={room}", files={'file': open(datei, 'r')}, auth=auth)
-    # requests.post("https://myserver.com/nesa", files={'file': open('roomdata/H21.xml', 'rb')})
