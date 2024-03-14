@@ -75,6 +75,9 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
   while (pos<response.length()) {
     int zeilenende = response.indexOf('\n', pos);
     int keyende = response.indexOf(' ', pos);
+    if (zeilenende<0 || keyende<0) {
+      errorScreen(String("No newline at end of http response, or missing space in line"), BlackImage, ImageSize);
+    }
     String key = response.substring(pos, keyende);
     String value = response.substring(keyende+1, zeilenende);
     Serial.println(value);
