@@ -2,7 +2,7 @@
 Use with
 from voltage2percentage import voltage2percentage
 """
-def volatage2percentage(voltage):
+def voltage2percentage(voltage):
     """
     Input: voltage (float, typically in the range 2.5 to 4.2)
     Output: percentage as a float between 0 and 1

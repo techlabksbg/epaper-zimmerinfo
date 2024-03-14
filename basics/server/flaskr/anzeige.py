@@ -10,7 +10,7 @@ from flaskr.misc import times
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
-from flaskr.voltage2percentage import volatage2percentage
+from flaskr.voltage2percentage import voltage2percentage
 from flask import request
 
 import os
@@ -88,8 +88,8 @@ def xml_to_bin(roomid):
     teacher = db.execute('SELECT teacher FROM room WHERE id = ?', (roomid,)).fetchone()[0]
 
     volt = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (macid,)).fetchone()
-    percentage = volatage2percentage(volt[0])
-    
+    percentage = voltage2percentage(volt[0])
+
     with open(path, 'wb') as f:
         f.write(b'0')
 

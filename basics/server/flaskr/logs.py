@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
+from flaskr.voltage2percentage import voltage2percentage
 from flask import request
 import hashlib
 
@@ -39,9 +40,9 @@ def index():
 
         battery = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (mac['id'],)).fetchone()
         if (battery == None):
-            battery = "No Battery Information available yet"
+            battery = None
         else:
-            battery = battery['volt']
+            battery = voltage2percentage(battery['volt'])*100
 
         new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery, 'macname':macname})
 
@@ -51,6 +52,9 @@ def index():
 def log(id):
     db = get_db()
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
+    volts = [dict(row) for row in volts]
+    for volt in volts:
+        volt['volt'] = voltage2percentage(volt['volt'])*100
 
     mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
     if (mac == None):
