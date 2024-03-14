@@ -147,7 +147,7 @@ def upload_image(id):
             return 'No selected image'
 
         # Generate a unique filename based on the current time, page ID, and secure filename
-        timestamp = datetime.now().strftime("%d.%m %Y_%H:%M.%S Uhr")
+        timestamp = datetime.now().strftime("%d.%m.%Y_%H:%M.%SUhr")
         filename = f"{id}/{timestamp}"
         
         # Save the image to a folder
