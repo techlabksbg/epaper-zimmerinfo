@@ -218,7 +218,7 @@ def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfa
     drawbw.multiline_text(draw_point, text=info, font=font, fill=0)
     info = teacher_short + endtime[:-3]
     draw_point = (Wochentage[day], Anfangszeiten[time]+14)
-    drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
+    drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
 def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font):
