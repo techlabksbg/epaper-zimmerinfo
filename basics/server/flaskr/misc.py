@@ -9,3 +9,4 @@ seventeen = now.replace(hour=17, minute=0, second=0, microsecond=0)
 
 times = [six, ten, twelve, seventeen]
 
+xml_server = "http://localhost:5001/room"

@@ -2,12 +2,25 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 
-from flaskr.auth import login_required
+from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
+from flaskr.plotting import plot_voltage
 from flask import request
+import hashlib
+
+import os
 
 bp = Blueprint('logs', __name__)
+
+def get_hash(roomid):
+    path = "flaskr"+url_for('static', filename=f'rooms/{roomid}/data.bin')
+    hash = ""
+    with open(path, 'rb') as f:
+        data = f.read()
+        hash = hashlib.md5(data).hexdigest()
+    return hash[:16]
 
 @bp.route('/')
 def index():
@@ -39,10 +52,22 @@ def log(id):
     db = get_db()
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
 
-    return render_template('logs/log.html', volts=volts)
+    mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
+    if (mac == None):
+        return redirect(url_for('logs.index'))
+    roomid = mac['roomid']
+    mac = mac['mac']
+
+    room = db.execute('SELECT roomname FROM room WHERE id = ?', (roomid, )).fetchone()
+    if (room == None):
+        room = None
+    else:
+        room = room['roomname']
+
+    return render_template('logs/log.html', volts=volts, mac=mac, room=room, id=str(id))
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
+@basic_auth.required
 def create():
     if request.method == 'POST':
         mac = request.form['mac']
@@ -63,12 +88,18 @@ def create():
             if (roomid == None):
                 db.execute('INSERT INTO room (roomname) VALUES (?)', (roomname, ))
                 db.commit()
+
                 roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
-            roomid = roomid[0]
+                try:
+                    os.makedirs(f"flaskr/static/rooms/{roomid['id']}")
+                except OSError:
+                    pass
+
+            roomid = roomid['id']
 
             mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
             if (mac_for_room != None):
-                error = 'Room already has mac ' + str(mac_for_room[0]) + ' assigned to it.'
+                error = 'Room already has MAC-Address ' + str(mac_for_room['mac']) + ' assigned to it.'
                 flash(error)
                 return render_template('logs/create.html')
 
@@ -76,6 +107,14 @@ def create():
             if (macid == None):
                 db.execute('INSERT INTO mac (roomid, mac) VALUES (?, ?)', (roomid, mac))
                 db.commit()
+
+                macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
+                try:
+                    os.makedirs(f"flaskr/static/macs/{macid}")
+                except OSError:
+                    pass
+
+                plot_voltage(f"flaskr/static/macs/{macid}", macid, mac)
             else:
                 db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
                 db.commit()
@@ -84,3 +123,26 @@ def create():
 
     return render_template('logs/create.html')
 
+@bp.route('/<int:id>/upload', methods=('GET', 'POST'))
+@basic_auth.required
+def upload_image(id):
+    if request.method == 'POST':
+        # Check if the POST request has the file part
+        if 'image' not in request.files:
+            return 'No file part'
+
+        image = request.files['image']
+
+        # If the user does not select a file, the browser may also
+        # submit an empty part without filename
+        if image.filename == '':
+            return 'No selected file'
+
+        # Save the image to a folder
+        filename = os.path.join("flaskr/static/uploads", secure_filename(image.filename))
+        print(filename)
+        image.save(filename)
+
+        return render_template('logs/upload_success.html', filename=image.filename)
+
+    return render_template('logs/upload_form.html', id=id)
