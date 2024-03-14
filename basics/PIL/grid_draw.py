@@ -71,16 +71,6 @@ def grid_drawer(drawbw, current_week_day, roomnumber, teacher):
     draw_point = (45,4)
     drawbw.multiline_text(draw_point, text=teacher, font=font, fill=0)
 
-    drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
-
-    prozent = 100
-    x = 32-(prozent/100*24)
-    y = 792-(prozent/100*24)
-
-    drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
-
-    drawbw.rectangle([(764,9),(765,11)])
-
     
     # Room number
     draw_point = (7,27)

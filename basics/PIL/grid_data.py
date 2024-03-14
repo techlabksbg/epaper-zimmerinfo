@@ -146,6 +146,15 @@ def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
         anfangszeiten = AnfangszeitenKSBG
     return anfangszeiten
 
+def battery_indicator(battery_percent):
+    drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
+
+    y = 792-(battery_percent*24)
+
+    drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+
+    drawbw.rectangle([(764,9),(765,11)])
+
 def draw_lesson(subject_short, Class, teacher_short, aditional_info, time, day, Anfangszeiten):
     info = subject_short + " " + Class
     draw_point = (Wochentage[day], Anfangszeiten[time])
