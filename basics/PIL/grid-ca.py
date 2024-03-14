@@ -116,18 +116,27 @@ drawbw.multiline_text(draw_point, text="Anderer Versuch", font=font, fill=0)
 drawbw.rounded_rectangle([(244, 48), (352, 72)] , fill ="white", radius=7, outline ="black", width = 1) 
 
 draw_point = (246, 48)
-drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill="#FF0000" )
+drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0 )
 
 draw_point = (246, 58)
 drawbw.multiline_text(draw_point, text="Reserviert 23.59", font=font, fill=0)
 
-draw_point = (2,2)
-drawbw.multiline_text(draw_point, text=".", font=font, fill=0)
 
 draw_point = (45,4)
 drawbw.multiline_text(draw_point, text="Ivo Bloechliger", font=font, fill=0)
 
-gd.hauptsacheeinrechteck("09:28:00", "10:13:00", drawbw)
+# gd.hauptsacheeinrechteck("09:28:00", "10:13:00", drawbw)
+# frame
+drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
+
+# content
+prozent = 100
+x = 32-(prozent/100*24)
+y = 792-(prozent/100*24)
+
+drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+
+drawbw.rectangle([(764,9),(765,11)])
 
 bw.save("bw.png", "PNG")
 bw.show() 
