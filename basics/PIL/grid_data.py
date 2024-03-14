@@ -79,12 +79,12 @@ isme_lesson_pixel = [
     [895,277]
 ]
 
-def head_draw():
+def head_draw(drawbw, zimmernummer, room_teacher):
     draw_point = (7,27)
-    drawbw.multiline_text(draw_point, text="H21" , font=font, fill=0)
+    drawbw.multiline_text(draw_point, text=zimmernummer , font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), fill=0)
 
     draw_point = (7,27)
-    drawbw.multiline_text(draw_point, text="Dr. Ivo Boeschinger" , font=font, fill=0)
+    drawbw.multiline_text(draw_point, text=room_teacher , font=ImageFont.truetype("DejaVuSans-Bold.ttf", size=11), fill=0)
 
 
 
@@ -158,7 +158,7 @@ def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
         anfangszeiten = AnfangszeitenKSBG
     return anfangszeiten
 
-def battery_indicator(battery_percent):
+def battery_indicator(battery_percent, drawbw):
     drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
 
     y = 792-(battery_percent*24)
