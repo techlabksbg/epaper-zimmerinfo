@@ -21,7 +21,8 @@ for event in tree.findall(".//event"):
 week = Week(events, date.today())
 
 #make image and grid
-bw = initializer.initialise_immage()
+bw = initializer.initialise_image_b()
+rw = initializer.initialise_image_r()
 gr.grid_drawer(bw[0], 0, "H21", "Ivo Bloeschlinger")
 gd.battery_indicator(0.3, bw[0])
 bw[1].save("bw.png", "PNG")
