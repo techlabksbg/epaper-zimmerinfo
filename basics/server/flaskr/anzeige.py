@@ -10,6 +10,7 @@ from flaskr.misc import times
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
+from flaskr.voltage2percentage import volatage2percentage
 from flask import request
 
 import os
@@ -76,6 +77,23 @@ def calc_firmware_update(firmware):
         return -1
     return latest_version
 
+def xml_to_bin(roomid):
+    db = get_db()
+    path = f"flaskr/static/rooms/{roomid}/data.bin"
+    macid = db.execute('SELECT id FROM mac WHERE roomid = ?', (roomid,)).fetchone()
+    if (macid == None):
+        raise ValueError(f"Roomid {roomid} has no mac assigned to it")
+    macid = macid[0]
+
+    teacher = db.execute('SELECT teacher FROM room WHERE id = ?', (roomid,)).fetchone()[0]
+
+    volt = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (macid,)).fetchone()
+    percentage = volatage2percentage(volt[0])
+    
+    with open(path, 'wb') as f:
+        f.write(b'0')
+
+
 @bp.route('/anzeige')
 def index():
     mac = request.args.get('mac')
@@ -126,12 +144,11 @@ def xml():
         db = get_db()
         roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
         xmldata.save(f"flaskr/static/rooms/{roomid[0]}/data.xml")
-        with open(f"flaskr/static/rooms/{roomid[0]}/data.bin", "wb") as f:
-            f.write(b'0')
+        xml_to_bin(roomid[0])
         return "OK"
     else:
         db = get_db()
-        roomnames = db.execute('SELECT roomname FROM room').fetchall()
+        roomnames = db.execute('SELECT roomname FROM room INNER JOIN mac ON mac.roomid = room.id').fetchall()
         roomnames = [str(name[0])+"\n"for name in roomnames]
         roomnames = "".join(roomnames)
         return roomnames

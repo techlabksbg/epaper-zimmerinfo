@@ -11,7 +11,8 @@ CREATE TABLE user (
 
 CREATE TABLE room (
   id INTEGER PRIMARY KEY AUTOINCREMENT, 
-  roomname TEXT NOT NULL UNIQUE
+  roomname TEXT NOT NULL UNIQUE,
+  teacher TEXT DEFAULT Unbekannt
 );
 
 CREATE TABLE mac (
