@@ -1,6 +1,7 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
+from flask import current_app
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
@@ -8,6 +9,8 @@ from flaskr.auth import login_required
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
 from flask import request
+
+from datetime import datetime # Import datetime module
 import hashlib
 
 import os
@@ -136,13 +139,15 @@ def upload_image(id):
         # If the user does not select a file, the browser may also
         # submit an empty part without filename
         if image.filename == '':
-            return 'No selected file'
+            return 'No selected image'
 
+        # Generate a unique filename based on the current time, page ID, and secure filename
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"image_{id}_{timestamp}"
+        
         # Save the image to a folder
-        filename = os.path.join("flaskr/static/uploads", secure_filename(image.filename))
-        print(filename)
-        image.save(filename)
+        image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
-        return render_template('logs/upload_success.html', filename=image.filename)
+        return render_template('logs/upload_success.html', filename=filename)
 
     return render_template('logs/upload_form.html', id=id)
