@@ -9,6 +9,7 @@ from datetime import date, timedelta
 import time
 import requests
 import mysecrets
+import filecmp
 
 if not os.path.exists("mysecrets.py"):
     with open("mysecrets.py", "w") as f:
@@ -125,6 +126,7 @@ class NesaPilot:
                 
 
     def getRooms(self, roomlist, numDays=7):
+        update_rooms = []
         if not os.path.exists("roomdata"):
             os.mkdir("roomdata")
         print("--> Dem Link «Agenda» folgen... <--")
@@ -134,9 +136,8 @@ class NesaPilot:
         self.getRoomDict()  # Get List of all available room (and corresponding indices)
         print(f"--> Liste der Räume: {self.rooms} <--")
         for room in roomlist:
-            print("sfj")
             if not room in self.rooms:  # Does this room even exist?
-                print(f"Raum {room} ist nicht in der Liste der )Räume. Vorhandene Räume:\n{self.rooms.keys()}")
+                print(f"Raum {room} ist nicht in der Liste der Räume. Vorhandene Räume:\n{self.rooms.keys()}")
                 continue
             # Load room page
             print(f"--> Seite für den Raum {room} laden... <--")
@@ -147,11 +148,18 @@ class NesaPilot:
             print(f"--> XML-Daten für Raum {room} laden... <--")
             xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
             # Save xml-Document
-            datei = f"roomdata/{room}.xml"
+            datei = f"roomdata/{room}_new.xml"
             with open(datei, "wb") as f:
                 f.write(html.tostring(xml))
+            # overwrite room.xml if they differ
+            if (not filecmp.cmp(f"roomdata/{room}_new.xml", f"roomdata/{room}.xml")):
+                datei = f"roomdata/{room}.xml"
+                with open(datei, "wb") as f:
+                    f.write(html.tostring(xml))
+                update_rooms.append(room)
             print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
             time.sleep(3)
+        return update_rooms
 
 
 if __name__== "__main__":
@@ -161,8 +169,7 @@ if __name__== "__main__":
     pilot = NesaPilot()
     roomnames = requests.get(f"{site}", auth=auth).content.decode('utf8')
     roomnames = roomnames.split("\n")[:-1]
-    print(roomnames)
-    pilot.getRooms(roomnames, 45)
+    roomnames = pilot.getRooms(roomnames, 45)
 
     # post request with all xml files
     for room in roomnames:
