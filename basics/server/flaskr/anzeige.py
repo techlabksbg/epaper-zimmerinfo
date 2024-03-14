@@ -98,6 +98,7 @@ def index():
         macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
         try:
             os.makedirs(f"flaskr/static/macs/{macid[0]}")
+            os.makedirs(f"flaskr/static/uploads/{macid[0]}")
         except OSError:
             pass
         

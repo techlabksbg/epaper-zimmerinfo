@@ -114,6 +114,7 @@ def create():
                 macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
                 try:
                     os.makedirs(f"flaskr/static/macs/{macid}")
+                    os.makedirs(f"flaskr/static/uploads/{macid}")
                 except OSError:
                     pass
 
@@ -143,7 +144,7 @@ def upload_image(id):
 
         # Generate a unique filename based on the current time, page ID, and secure filename
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"image_{id}_{timestamp}"
+        filename = f"{id}/{timestamp}"
         
         # Save the image to a folder
         image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
