@@ -12,6 +12,7 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         UPLOAD_FOLDER='flaskr/static/uploads', # Change the folder path accordingly
+        BINARIES_FOLDER='flaskr/static/binaries',
         BASIC_AUTH_USERNAME=mysecrets.login,
         BASIC_AUTH_PASSWORD=mysecrets.password
     )
