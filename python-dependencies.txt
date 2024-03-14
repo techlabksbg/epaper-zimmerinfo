@@ -1,0 +1,11 @@
+flask
+flask-basicauth
+pillow
+matplotlib
+opencv-python
+lxml
+pycairo
+cairosvg
+icalendar
+serial
+
