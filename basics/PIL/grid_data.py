@@ -1,6 +1,7 @@
 from operator import mul
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from event import Event
+import initializer as init
 
 
 AnfangszeitenKSBG = {
@@ -150,14 +151,18 @@ def check_isme_or_not(weekday): #0=Montag, 6 == Sonntag
         anfangszeiten = AnfangszeitenKSBG
     return anfangszeiten
 
-def battery_indicator(battery_percent, drawbw):
+def battery_indicator(battery_percent, drawbw, drawrw):
     drawbw.rounded_rectangle([(766, 4), (794, 16)] , fill ="white", radius=0, outline ="black", width = 1) 
+    drawbw.rectangle([(764,9),(765,11)])
 
     y = 792-(battery_percent*24)
 
-    drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+    if battery_percent < 26:
+        drawrw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
 
-    drawbw.rectangle([(764,9),(765,11)])
+    else:
+        drawbw.rounded_rectangle([(y, 6), (792, 14)] , fill ="black", radius=0, outline ="black", width = 1) 
+
 
 def draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, day, Anfangszeiten, font):
     info = subject_short + " " + Class
@@ -214,7 +219,7 @@ def draw_reservation(drawbw, starttime, endtime, teacher_short,  time, day, Anfa
     drawbw.multiline_text(draw_point, text=teacher_short, font=font, fill=0)
 
 
-def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw, text):
+def draw_data(current_weekday, current_date, event_date, starttime, endtime, subject, Class, teacher, aditional_info, time, subject_short, teacher_short, weekday, reservator, drawbw, font, bw, text, drawrw, rw):
     anfangszeiten = check_isme_or_not(weekday)
     if Class == None:
         Class = " "
@@ -242,5 +247,10 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
                 draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, font)
 
     bw.save("bw.png", "PNG")
+    rw.save("rw.png", "PNG")
+
+    rgb = init.combine_bw_rw(bw, rw)
+    rgb.show()
+
     
 
