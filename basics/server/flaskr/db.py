@@ -36,6 +36,7 @@ def init_db_command():
     shutil.rmtree("flaskr/static/macs", ignore_errors=True)
     shutil.rmtree("flaskr/static/rooms", ignore_errors=True)
     shutil.rmtree("flaskr/static/uploads", ignore_errors=True)
+    shutil.rmtree("flaskr/static/binaries", ignore_errors=True)
     init_db()
     click.echo('Initialized the database.')
 
@@ -45,6 +46,7 @@ def init_app(app):
         os.makedirs(f"flaskr/static/macs/")
         os.makedirs(f"flaskr/static/rooms/")
         os.makedirs(f"flaskr/static/uploads/")
+        os.makedirs(f"flaskr/static/binaries/")
     except OSError:
         pass
     app.cli.add_command(init_db_command)

@@ -18,14 +18,6 @@ import os
 
 bp = Blueprint('logs', __name__)
 
-def get_hash(roomid):
-    path = "flaskr"+url_for('static', filename=f'rooms/{roomid}/data.bin')
-    hash = ""
-    with open(path, 'rb') as f:
-        data = f.read()
-        hash = hashlib.md5(data).hexdigest()
-    return hash[:16]
-
 @bp.route('/')
 def index():
     db = get_db()
@@ -118,6 +110,8 @@ def create():
                 macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
                 try:
                     os.makedirs(f"flaskr/static/macs/{macid}")
+                    os.makedirs(os.path.join(current_app.config['UPLOAD_FOLDER'], macid))
+                    os.makedirs(os.path.join(current_app.config['BINARIES_FOLDER'], macid))
                     os.makedirs(f"flaskr/static/uploads/{macid}")
                 except OSError:
                     pass
