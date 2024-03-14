@@ -12,7 +12,8 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         BASIC_AUTH_USERNAME=mysecrets.login,
-        BASIC_AUTH_PASSWORD=mysecrets.password
+        BASIC_AUTH_PASSWORD=mysecrets.password,
+        UPLOAD_FOLDER='flaskr/static/images' # Change the folder path accordingly
     )
 
     basic_auth = BasicAuth(app)
