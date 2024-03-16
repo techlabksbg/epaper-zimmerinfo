@@ -14,6 +14,9 @@ from flask import request
 from datetime import datetime # Import datetime module
 import hashlib
 
+from flaskr.imageConversion import dither_to_bin_and_rgb
+from PIL import Image
+
 import os
 
 bp = Blueprint('logs', __name__)
@@ -147,12 +150,19 @@ def upload_image(id):
             return 'No selected image'
 
         # Generate a unique filename based on the current time, page ID, and secure filename
-        timestamp = datetime.now().strftime("%d.%m.%Y_%H:%M.%SUhr")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{id}/{timestamp}"
-        
+        pngfilename = filename+".png"
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename) 
+        pngfilepath = filepath+".png"
         # Save the image to a folder
-        image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        image.save(pngfilepath)
+        rgb = Image.open(pngfilepath)
+        binary,rgb = dither_to_bin_and_rgb(rgb)
+        with open(filepath+".bin", "wb") as f:
+            f.write(binary)
+        rgb.save(pngfilepath, "PNG")
 
-        return render_template('logs/upload_success.html', filename=filename)
+        return render_template('logs/upload_success.html', filename=pngfilename)
 
     return render_template('logs/upload_form.html', id=id)
