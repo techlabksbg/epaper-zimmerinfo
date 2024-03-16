@@ -120,8 +120,11 @@ def create():
 
                 macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
                 try:
+                    # TODO
+                    # Diese Erzeugung in eine separate Datei, weil die wird auch von anzeige.py gebraucht
                     os.makedirs(f"flaskr/static/macs/{macid}")
                     os.makedirs(f"flaskr/static/uploads/{macid}")
+                    os.makedirs(f"flaskr/static/binaries/{macid}")
                 except OSError:
                     pass
 
@@ -154,12 +157,13 @@ def upload_image(id):
         filename = f"{id}/{timestamp}"
         pngfilename = filename+".png"
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename) 
+        binpath = os.path.join(current_app.config['BINARIES_FOLDER'], filename+".bin") 
         pngfilepath = filepath+".png"
         # Save the image to a folder
         image.save(pngfilepath)
         rgb = Image.open(pngfilepath)
         binary,rgb = dither_to_bin_and_rgb(rgb)
-        with open(filepath+".bin", "wb") as f:
+        with open(binpath, "wb") as f:
             f.write(binary)
         rgb.save(pngfilepath, "PNG")
 
