@@ -2,5 +2,6 @@ instance/
 flaskr/static/macs/
 flaskr/static/rooms/
 flaskr/static/uploads/
+flaskr/static/binaries/
 flaskr/static/firmware/
 flaskr/mysecrets.py
