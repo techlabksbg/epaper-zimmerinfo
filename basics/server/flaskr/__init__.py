@@ -1,8 +1,13 @@
 import os
 
 from flask import Flask
-import flaskr.mysecrets as mysecrets 
 from flask_basicauth import BasicAuth
+# Stupid default values for the user
+if not os.path.exists("flaskr/mysecrets.py"):
+    with open("flaskr/mysecrets.py","w") as f:
+        f.write("login='user'\npassword='pass'\n")
+
+import flaskr.mysecrets as mysecrets 
 basic_auth = BasicAuth()
 
 def create_app(test_config=None):
@@ -13,6 +18,9 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
         UPLOAD_FOLDER='flaskr/static/uploads', # Change the folder path accordingly
         BINARIES_FOLDER='flaskr/static/binaries',
+        FIRMWARE_FOLDER='flaskr/static/firmware',
+        ROOMS_FOLDER='flaskr/static/rooms',
+        MACS_FOLDER='flaskr/static/macs',
         BASIC_AUTH_USERNAME=mysecrets.login,
         BASIC_AUTH_PASSWORD=mysecrets.password
     )

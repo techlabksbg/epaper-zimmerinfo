@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS mac;
 DROP TABLE IF EXISTS volt;
 DROP TABLE IF EXISTS image;
-DROP TABLE IF EXISTS imagedisplay;
+DROP TABLE IF EXISTS displayschedule;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,13 +38,12 @@ CREATE TABLE image (
   bin TEXT not NULL
 );
 
-CREATE TABLE imagedisplay (
+CREATE TABLE displayschedule (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   imageid INT NOT NULL,
   macid INT NOT NULL,
   earliest TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   latest TIMESTAMP
-)
+);
 
-INSERT into mac (mac) values ("A0:B1:C2:D3:E4:F5");
 

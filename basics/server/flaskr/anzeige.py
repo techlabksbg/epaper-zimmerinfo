@@ -1,7 +1,9 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, render_template, request, url_for, current_app
+
 )
 from werkzeug.exceptions import abort
+
 from datetime import datetime
 
 from flaskr.__init__ import basic_auth
@@ -11,9 +13,8 @@ from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
 from flaskr.voltage2percentage import voltage2percentage
-from flask import request
+from flaskr.datalogic import id_for_mac, calc_firmware_update
 
-import os
 
 bp = Blueprint('anzeige', __name__)
 
@@ -54,28 +55,6 @@ def calc_image_update(macid, hash):
         roomid = 0
     return roomid, hash_db
 
-def calc_firmware_update(firmware):
-    if (firmware == None):
-        return -1
-    path = "flaskr"+url_for('static', filename='firmware/')
-    files = os.listdir(path)
-
-    latest_version = firmware
-
-    for file in files:
-        if not file.endswith('.bin'):
-            continue
-
-        version = file.split('.')[0]
-        print(version)
-        print(firmware)
-
-        if (version > firmware):
-            latest_version = max(latest_version, version)
-        
-    if (latest_version == firmware):
-        return -1
-    return latest_version
 
 def xml_to_bin(roomid):
     db = get_db()
@@ -103,21 +82,8 @@ def index():
 
     db = get_db()
 
-    macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
+    macid = id_for_mac(mac)
 
-    if (macid == None):
-        db.execute('INSERT INTO mac (mac) VALUES (?)', (mac, ))
-        db.commit()
-
-        macid = db.execute('SELECT id FROM mac WHERE mac = ?',(mac,)).fetchone()
-        try:
-            os.makedirs(f"flaskr/static/macs/{macid[0]}")
-            os.makedirs(os.path.join(current_app.config['UPLOAD_FOLDER'], macid[0]))
-            os.makedirs(os.path.join(current_app.config['BINARIES_FOLDER'], macid[0]))
-        except OSError:
-            pass
-        
-    macid = macid[0]
     db.execute('INSERT INTO volt (volt, macid) VALUES (?, ?)', (volt, macid))
     db.commit()
     plot_graph(macid, mac)
@@ -145,9 +111,12 @@ def xml():
 
         db = get_db()
         roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
-        xmldata.save(f"flaskr/static/rooms/{roomid[0]}/data.xml")
-        xml_to_bin(roomid[0])
-        return "OK"
+        if (roomid!=None):
+            xmldata.save(f"{current_app.config['ROOMS_FOLDER']}/{roomid[0]}/data.xml")
+            xml_to_bin(roomid[0])
+            return "OK"
+        else:
+            return "No such room!"
     else:
         db = get_db()
         roomnames = db.execute('SELECT roomname FROM room INNER JOIN mac ON mac.roomid = room.id').fetchall()

@@ -33,18 +33,14 @@ def init_db():
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
-    shutil.rmtree("flaskr/static/macs", ignore_errors=True)
-    shutil.rmtree("flaskr/static/rooms", ignore_errors=True)
-    shutil.rmtree("flaskr/static/uploads", ignore_errors=True)
+    folders = {f:current_app.config[f] for f in current_app.config.keys() if f.endswith("_FOLDER")}
+    for key,folder in folders.items():
+        print(f"{key}: deleting and recreating {folder}")
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
     init_db()
     click.echo('Initialized the database.')
 
 def init_app(app):
     app.teardown_appcontext(close_db)
-    try:
-        os.makedirs(f"flaskr/static/macs/")
-        os.makedirs(f"flaskr/static/rooms/")
-        os.makedirs(f"flaskr/static/uploads/")
-    except OSError:
-        pass
     app.cli.add_command(init_db_command)

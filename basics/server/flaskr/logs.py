@@ -1,7 +1,11 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for, current_app
 )
-from flask import current_app
+
+from datetime import datetime # Import datetime module
+import hashlib
+from PIL import Image
+
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
@@ -9,13 +13,8 @@ from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
 from flaskr.voltage2percentage import voltage2percentage
-from flask import request
-
-from datetime import datetime # Import datetime module
-import hashlib
-
 from flaskr.imageConversion import dither_to_bin_and_rgb
-from PIL import Image
+from flaskr.datalogic import id_for_room, id_for_mac
 
 import os
 
@@ -94,18 +93,7 @@ def create():
         else:
             db = get_db()
 
-            roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
-            if (roomid == None):
-                db.execute('INSERT INTO room (roomname) VALUES (?)', (roomname, ))
-                db.commit()
-
-                roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
-                try:
-                    os.makedirs(f"flaskr/static/rooms/{roomid['id']}")
-                except OSError:
-                    pass
-
-            roomid = roomid['id']
+            roomid = id_for_room(roomname)
 
             mac_for_room = db.execute('SELECT mac FROM mac WHERE roomid = ?', (roomid, )).fetchone()
             if (mac_for_room != None):
@@ -113,25 +101,12 @@ def create():
                 flash(error)
                 return render_template('logs/create.html')
 
-            macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()
-            if (macid == None):
-                db.execute('INSERT INTO mac (roomid, mac) VALUES (?, ?)', (roomid, mac))
-                db.commit()
-
-                macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
-                try:
-                    # TODO
-                    # Diese Erzeugung in eine separate Datei, weil die wird auch von anzeige.py gebraucht
-                    os.makedirs(f"flaskr/static/macs/{macid}")
-                    os.makedirs(f"flaskr/static/uploads/{macid}")
-                    os.makedirs(f"flaskr/static/binaries/{macid}")
-                except OSError:
-                    pass
-
+            macid = id_for_mac(mac) 
+            db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
+            db.commit()
+            if (macid == None):  # Never happening now, what did it do before?
+                # ???
                 plot_voltage(f"flaskr/static/macs/{macid}", macid, mac)
-            else:
-                db.execute('UPDATE mac SET roomid = ? WHERE mac = ?', (roomid, mac))
-                db.commit()
 
             return redirect(url_for('logs.index'))
 
