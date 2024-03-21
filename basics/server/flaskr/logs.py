@@ -1,14 +1,21 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
+from flask import current_app
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 
 from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
 from flaskr.plotting import plot_voltage
+from flaskr.voltage2percentage import voltage2percentage
 from flask import request
+
+from datetime import datetime # Import datetime module
 import hashlib
+
+from flaskr.imageConversion import dither_to_bin_and_rgb
+from PIL import Image
 
 import os
 
@@ -39,9 +46,9 @@ def index():
 
         battery = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (mac['id'],)).fetchone()
         if (battery == None):
-            battery = "No Battery Information available yet"
+            battery = None
         else:
-            battery = battery['volt']
+            battery = voltage2percentage(battery['volt'])*100
 
         new_macs.append({'roomname':roomname, 'macid':mac['id'], 'battery':battery, 'macname':macname})
 
@@ -51,6 +58,9 @@ def index():
 def log(id):
     db = get_db()
     volts = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) ASC', (id, )).fetchall()
+    volts = [dict(row) for row in volts]
+    for volt in volts:
+        volt['volt'] = voltage2percentage(volt['volt'])*100
 
     mac = db.execute('SELECT mac, roomid FROM mac WHERE id = ?', (id, )).fetchone()
     if (mac == None):
@@ -110,7 +120,11 @@ def create():
 
                 macid = db.execute('SELECT id FROM mac WHERE mac = ?', (mac, )).fetchone()['id']
                 try:
+                    # TODO
+                    # Diese Erzeugung in eine separate Datei, weil die wird auch von anzeige.py gebraucht
                     os.makedirs(f"flaskr/static/macs/{macid}")
+                    os.makedirs(f"flaskr/static/uploads/{macid}")
+                    os.makedirs(f"flaskr/static/binaries/{macid}")
                 except OSError:
                     pass
 
@@ -136,13 +150,23 @@ def upload_image(id):
         # If the user does not select a file, the browser may also
         # submit an empty part without filename
         if image.filename == '':
-            return 'No selected file'
+            return 'No selected image'
 
+        # Generate a unique filename based on the current time, page ID, and secure filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{id}/{timestamp}"
+        pngfilename = filename+".png"
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename) 
+        binpath = os.path.join(current_app.config['BINARIES_FOLDER'], filename+".bin") 
+        pngfilepath = filepath+".png"
         # Save the image to a folder
-        filename = os.path.join("flaskr/static/uploads", secure_filename(image.filename))
-        print(filename)
-        image.save(filename)
+        image.save(pngfilepath)
+        rgb = Image.open(pngfilepath)
+        binary,rgb = dither_to_bin_and_rgb(rgb)
+        with open(binpath, "wb") as f:
+            f.write(binary)
+        rgb.save(pngfilepath, "PNG")
 
-        return render_template('logs/upload_success.html', filename=image.filename)
+        return render_template('logs/upload_success.html', filename=pngfilename)
 
     return render_template('logs/upload_form.html', id=id)

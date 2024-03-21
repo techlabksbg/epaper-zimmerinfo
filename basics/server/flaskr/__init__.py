@@ -11,6 +11,8 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        UPLOAD_FOLDER='flaskr/static/uploads', # Change the folder path accordingly
+        BINARIES_FOLDER='flaskr/static/binaries',
         BASIC_AUTH_USERNAME=mysecrets.login,
         BASIC_AUTH_PASSWORD=mysecrets.password
     )
@@ -35,9 +37,6 @@ def create_app(test_config=None):
 
     from . import logs
     app.register_blueprint(logs.bp)
-
-    from . import auth
-    app.register_blueprint(auth.bp)
 
     from . import anzeige
     app.register_blueprint(anzeige.bp)

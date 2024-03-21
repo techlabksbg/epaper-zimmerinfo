@@ -10,7 +10,11 @@
 <h1>Choose an image</h1>
 <form method="post" enctype="multipart/form-data">
     <input type="file" name="image" accept="image/*" required>
-    <input type="submit" value="Upload">
+    <input type="submit" value="Upload" onclick="document.getElementById('conversioninfo').style.display='block'" />
 </form>
+<div id="conversioninfo" style="display:none">
+	Das Bild wird auf dem Server konvertiert...<br>
+	Bitte warten...
+</div>
 
 {% endblock %}

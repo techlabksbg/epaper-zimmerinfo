@@ -12,7 +12,7 @@
         <div>
           <h1>Room: {{ mac["roomname"] }}, MAC-Address: {{ mac['macname'] }}</h1>
           {%if not mac["battery"] == None%}
-            <div class="battery">Battery: {{ mac["battery"] }}<div>
+            <div class="battery">Battery: {{ mac["battery"] }}%<div>
           {% else %}
             <div class="battery">Battery: No Data<div>
           {% endif %}
