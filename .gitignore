@@ -1,9 +1,4 @@
 __pycache__
 __MACOSX
-bin/
-lib/
-lib64
-pyvenv.cfg
-share/
-var/
+.venv
 *.swp

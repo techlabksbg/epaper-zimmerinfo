@@ -7,20 +7,20 @@ Allgemein:
     * ssh (nach einem Vierteljahrhundert jetzt auch native in Windows enthalten)
 
 ## Python libraries
-  * icalendar
-  * lxml
+Siehe [Dependencies](python-dependencies.txt).
 
-### Installation unter Windows:
-```bash
-pip install icalendar lxml cairosvg
-```
+Es wird empfohlen ein virtuelles Python environment aufzusetzen. Das Script
 
-### Installation unter Ubuntu: 
+[install-deps.bash](install-deps.bash)
+
+erledigt das Aufsetzen des venv (in .venv) und installiert gleich auch alle nötigen packages.
+
+Das Environment muss auf der Kommandozeile mit
 ```bash
-sudo apt install python3-icalendar python3-lxml python3-cairosvg
+source .venv/bin/activate
 ```
-Man könnte auch pip3 verwenden, was aber unter Umständen zu Konflikten mit dem Paketmanager apt führen kann.
-Eine weitere, saubere Alternative sind virtuelle Python-Environments
+gestartet werden.
+
 
 
 [Zurück](README.md) zum README
