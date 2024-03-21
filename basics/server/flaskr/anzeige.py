@@ -5,6 +5,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 from datetime import datetime
+import os
 
 from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
