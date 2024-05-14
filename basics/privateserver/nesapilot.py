@@ -8,12 +8,11 @@ import re
 from datetime import date, timedelta
 import time
 import requests
-import mysecrets
 import filecmp
 
 if not os.path.exists("mysecrets.py"):
     with open("mysecrets.py", "w") as f:
-        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\nlogin='hans.wurst'\npasswort='123456'\n#curl='custompathtocurl'\n")
+        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\n#Nesa login\nlogin='hans.wurst'\npasswort='123456'\n\n#curl='custompathtocurl'\n\n#Auth for epaper server and url\nlogin_web='user'\npassword_web='pass'\nserver_url='http://127.0.0.1:5000/'\n")
     raise RuntimeError("Die Datei mysecrets.py wurde angelegt. Bitte bearbeiten Sie die Datei mysecrets.py.")
 
 import mysecrets
