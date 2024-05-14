@@ -166,7 +166,7 @@ class NesaPilot:
 
 
 if __name__== "__main__":
-    site = "http://127.0.0.1:5000/xml"
+    site = mysecrets.server_url
     auth=(mysecrets.login_web, mysecrets.password_web)
 
     pilot = NesaPilot()
