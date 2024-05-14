@@ -68,7 +68,8 @@ def xml_to_bin(roomid):
     teacher = db.execute('SELECT teacher FROM room WHERE id = ?', (roomid,)).fetchone()[0]
 
     volt = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (macid,)).fetchone()
-    percentage = voltage2percentage(volt[0])
+
+    #percentage = voltage2percentage(volt[0])
 
     with open(path, 'wb') as f:
         f.write(b'0')
