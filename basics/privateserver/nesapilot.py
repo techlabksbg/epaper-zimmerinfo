@@ -171,7 +171,7 @@ if __name__== "__main__":
     pilot = NesaPilot()
     roomnames = requests.get(f"{site}", auth=auth).content.decode('utf8')
     roomnames = roomnames.split("\n")[:-1]
-    roomnames = pilot.getRooms(roomnames, 45)
+    roomnames = pilot.getRooms(roomnames, 10)
 
     # post request with all xml files
     for room in roomnames:
