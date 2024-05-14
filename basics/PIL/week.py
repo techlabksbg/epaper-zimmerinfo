@@ -1,6 +1,5 @@
 from datetime import date, datetime, timedelta
 from day import Day
-from typing import Self
 from event import Event
 
 class Week:

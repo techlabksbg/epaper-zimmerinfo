@@ -249,19 +249,22 @@ def draw_data(current_weekday, current_date, event_date, starttime, endtime, sub
     else:
         print(text)
         if text != "Reserviert":
-            draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, weekday, anfangszeiten, font)
+            if (current_weekday==weekday):
+                draw_lesson_today(drawbw, subject, Class, teacher, aditional_info, time, anfangszeiten, font)
+            else:
+                draw_lesson(drawbw, subject_short, Class, teacher_short, aditional_info, time, (weekday-current_weekday+7)%7, anfangszeiten, font)
         else:
             if starttime in anfangszeiten:
                 draw_reservation_at_lessontime(drawbw, starttime, teacher, time, weekday, anfangszeiten, font, drawrw)
             else:
                 draw_reservation(drawbw, starttime, endtime, teacher, time, current_weekday, anfangszeiten, current_weekday, font, drawrw)
 
-    bw.save("bw.png", "PNG")
-    rw.save("rw.png", "PNG")
-
-    rgb = bytes(bw.tobytes())+bytes(rw.tobytes())
-    with open ("datargb.bin", "wb") as f:
-        f.write(rgb)
+#    bw.save("bw.png", "PNG")
+#    rw.save("rw.png", "PNG")
+#
+#    rgb = bytes(bw.tobytes())+bytes(rw.tobytes())
+#    with open ("datargb.bin", "wb") as f:
+#        f.write(rgb)
 
 
     

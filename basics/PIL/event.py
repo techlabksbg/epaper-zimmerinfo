@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Self
+#from typing import Self
 
 class Event:
     def __init__(self, tree):
@@ -29,11 +29,11 @@ class Event:
     def __str__(self) -> str:
         return f"{self.text}: {self.start_datetime} bis {self.end_datetime}"
 
-    def __lt__(self, other:Self) -> bool:
+    def __lt__(self, other) -> bool:
         return self.end_datetime < other.end_datetime
     
-    def __gt__(self, other:Self) -> bool:
+    def __gt__(self, other) -> bool:
         return other<self
 
-    def overlap(self, other:Self) -> bool:
+    def overlap(self, other) -> bool:
         return not (self<other or self>other)
