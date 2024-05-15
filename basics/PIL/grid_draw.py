@@ -5,7 +5,10 @@
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from time import sleep
 from operator import mul
-import grid_data as gd
+try:
+    from . import grid_data as gd
+except ImportError:
+    import grid_data as gd
 
 def grid_drawer(drawbw, current_week_day, roomnumber, teacher):
     # Draw fat horizontal lines

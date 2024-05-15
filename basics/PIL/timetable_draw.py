@@ -1,8 +1,13 @@
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 from time import sleep
 from operator import mul
-import grid_draw as gr
-import grid_data as gd
+try:
+    from . import grid_draw as gr
+    from . import grid_data as gd
+except ImportError:
+    import grid_draw as gr
+    import grid_data as gd
+
 from lxml import etree
 from event import Event
 from week import Week
