@@ -144,7 +144,7 @@ class NesaPilot:
             print(f"--> XML-Daten für Raum {room} laden... <--")
             xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
             # Save xml-Document
-            datei = f"roomdata/{room}.xml".replace("/","_")
+            datei = f"roomdata/{room.replace('/','_')}.xml"
             with open(datei, "wb") as f:
                 f.write(html.tostring(xml))
             print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
@@ -153,4 +153,5 @@ class NesaPilot:
 
 if __name__== "__main__":
     pilot = NesaPilot()
-    pilot.getRooms(pilot.rooms, 45)
+    pilot.getRooms(["H21","H47", "D50", "E21", "A14"], 45)
+
