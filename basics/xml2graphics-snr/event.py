@@ -10,6 +10,7 @@ class Event:
         self.text: str = tree.find('.//text').text
         self.color: str = tree.find('.//color').text
         self.klasse: str | None = tree.find('.//klasse').text
+        self.klassekurz = None
         if self.klasse:
             self.klassekurz: str = self.klasse.replace("*","")
         self.fachkuerzel: str = tree.find('.//fachkuerzel').text

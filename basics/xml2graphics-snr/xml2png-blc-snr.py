@@ -78,6 +78,8 @@ def erzeuge_stundenplan(zimmer = "G14", besitzer = "Mister X", batteriestand = 0
 
     # https://levelup.gitconnected.com/how-to-properly-calculate-text-size-in-pil-images-17a2cc6f51fd
     def get_text_dimensions(text_string: str, font: ImageFont) -> list[int]:
+        if (text_string==None or len(text_string)==0):
+            return (0,0)
         # https://stackoverflow.com/a/46220683/9263761
         ascent, descent = font.getmetrics()
         text_width = font.getmask(text_string).getbbox()[2]
@@ -85,6 +87,8 @@ def erzeuge_stundenplan(zimmer = "G14", besitzer = "Mister X", batteriestand = 0
         return (text_width, text_height)
 
     def schreibe(x, y, s, align="topleft"):
+        if (s==None or s==""):
+            return
         w, h = get_text_dimensions(s, inhaltfont)
         bx, by = bildkoordinate_von_spalte_zeile(x, y)
         if align == "topleft":
@@ -184,7 +188,7 @@ def erzeuge_stundenplan(zimmer = "G14", besitzer = "Mister X", batteriestand = 0
     drawbw.text((topleft_x + 3 * boxbreite, (topleft_y - boxhoehe - h) // 2), batteriestring, font = kopfzeilenfont, fill="black")
     return bw, rw
 
-bw, rw = erzeuge_stundenplan("A11", "Mister X", 0.5)
+bw, rw = erzeuge_stundenplan("H21", "Mister X", 0.5)
 
 bw.save("bw.png", "PNG") 
 rw.save("rw.png", "PNG") 
