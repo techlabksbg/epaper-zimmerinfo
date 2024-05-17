@@ -43,7 +43,6 @@ void fadeout() {
 #define BATPIN 34
 void initWiFi() {
   Serial.println(SSID);
-  Serial.println(PASSWD);
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
   Serial.print("Connecting to WiFi ..");
