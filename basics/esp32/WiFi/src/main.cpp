@@ -42,6 +42,8 @@ void fadeout() {
 
 #define BATPIN 34
 void initWiFi() {
+  Serial.println(SSID);
+  Serial.println(PASSWD);
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWD);
   Serial.print("Connecting to WiFi ..");
@@ -130,7 +132,11 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   printf("NewImage:BlackImage and RYImage\r\n");
   Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
   Paint_NewImage(BlackImage+ImageSize, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+  Paint_SelectImage(BlackImage+ImageSize);
+  Paint_Clear(WHITE);
   Paint_SelectImage(BlackImage);
+  Paint_Clear(WHITE);
+  
   Paint_DrawString_EN(100,100, fehler.c_str(), &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
@@ -145,6 +151,8 @@ void setup(){
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 
   Serial.begin(115200);
+  Serial.println("MAC-Address:");
+  Serial.println(WiFi.macAddress());
   pinMode(BUILTIN_LED, OUTPUT);
   flash(2, 20, 300);
   printf("EPD_7IN5B_V2_test Demo\r\n");
@@ -156,7 +164,7 @@ void setup(){
 
   printf("e-Paper Init and Clear...\r\n");
   EPD_7IN5B_V2_Init();
-  // EPD_7IN5B_V2_Clear();
+  //EPD_7IN5B_V2_Clear();
   DEV_Delay_ms(500);
   UBYTE *BlackImage, *RYImage;
   UWORD Imagesize = ((EPD_7IN5B_V2_WIDTH % 8 == 0) ? (EPD_7IN5B_V2_WIDTH / 8 ) : (EPD_7IN5B_V2_WIDTH / 8 + 1)) * EPD_7IN5B_V2_HEIGHT;
@@ -166,20 +174,33 @@ void setup(){
     //LED blinken lassen
   }
   RYImage=BlackImage+Imagesize;
+  Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+  Paint_SelectImage(BlackImage);
+  Paint_Clear(WHITE);
+  Paint_NewImage(RYImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
+  Paint_SelectImage(RYImage);
+  Paint_Clear(WHITE);
+
+
   
 
+  Serial.println("WiFi-Init...");
   initWiFi();
   if (WiFi.status() !=WL_CONNECTED) {
+    Serial.println("Keine WiFi-Verbindung...");
     errorScreen("Keine WiFi-Verbindung", BlackImage, Imagesize);
+
   }
   else{
-  String mac = WiFi.macAddress();
-  flash(5, 10, 100);
-  int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
-  BlackImage[len]=0;
-  String response = String((char*)BlackImage);
-  flash(5,10,100);
-  antwort(response, BlackImage, Imagesize);
+    String mac = WiFi.macAddress();
+    Serial.println("MAC-Address");
+    Serial.println(mac);
+    flash(5, 10, 100);
+    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
+    BlackImage[len]=0;
+    String response = String((char*)BlackImage);
+    flash(5,10,100);
+    antwort(response, BlackImage, Imagesize);
   }
 }
 
