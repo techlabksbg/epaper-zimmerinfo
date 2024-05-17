@@ -6,6 +6,8 @@ from .ev.week import Week
 from . import imageConversion
 from . import drawing
 
+from PIL import ImageDraw
+
 def planmaker(xmldatei, heute, zimmertitel, zimmername, battery, outputdirAndPrefix):
     def loadData(xmldatei, heute):
         tree = etree.parse(xmldatei)
@@ -19,6 +21,7 @@ def planmaker(xmldatei, heute, zimmertitel, zimmername, battery, outputdirAndPre
     bitmaps = [imageConversion.newBWimage(size=resolution) for i in range(2)]
 
     drawing.draw(week, heute, zimmertitel, zimmername, battery, bitmaps)
+    
     with open(outputdirAndPrefix+".bin", "wb") as f:
         f.write(imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1]))
     imageConversion.bw_rw2rgb(bitmaps[0], bitmaps[1], resolution).save(outputdirAndPrefix+".png")

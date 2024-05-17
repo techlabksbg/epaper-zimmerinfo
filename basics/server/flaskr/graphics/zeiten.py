@@ -6,6 +6,9 @@ anfangszeitenKSBG = [time(t[0],t[1]) for t in [
     [13,55], [14,49], [15,43], [16,33], [17,23],
     [18,8], [18,15], [19,00], [19,5], [19,50],[19,55],[20,40],[20,45],[21,30]]]
 
+separatorenKSBG = [0 for z in anfangszeitenKSBG]
+separatorenKSBG[2]=separatorenKSBG[4]=separatorenKSBG[6]=1
+
 anfangszeitenISME = [time(t[0],t[1]) for t in [
         [7,45], [8,40], [9,35], [10,40], [11,35], [12,25], [13,15], [14,5], [14,55]]]
 

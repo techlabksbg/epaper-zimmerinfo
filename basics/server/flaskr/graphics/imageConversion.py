@@ -48,9 +48,11 @@ def bw_rw2rgb(bw, rw, size=(800,480)):
     r = rw.convert("RGB")
     datab = np.array(b)
     datar = np.array(r)
-    # Convert all pixels that are black and red to black (i.e. white on red)
+    # Convert all pixels that are black and red to black (i.e. white on the red bitmap)
     datar[:,:,:3][datab[:,:,0]==0] = [255,255,255]
     datar[:,:,:3][datar[:,:,0]==0] = [255,0,0]  # Replace all black with red
+    datar[:,:,:3][datab[:,:,0]==0] = [0,0,0]    # Copy black pixels as black
+
     return Image.fromarray(datar)
 
 

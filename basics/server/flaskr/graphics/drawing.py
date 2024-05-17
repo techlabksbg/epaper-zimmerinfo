@@ -35,8 +35,16 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
             for event in day.events:
                 computeSize(event)
                 
+    def ksbgZeiten(bitmap):
+        col = layout.Column()
+        for  i,lines in enumerate(zeiten.rasterTextKSBG()):
+            tl = layout.TextLines()
+            for line in lines:
+                tl.addLine(line, fontSet.normal)
+            tl.getBox(2)
+            col.addRow(tl,3+zeiten.separatorenKSBG[i])
+        col.draw(2,479-col.getBox()[1], bitmap) 
 
-    for  lines in zeiten.rasterTextKSBG():
-        print(lines)
 
-    resolution = bitmaps[0].size
+    ksbgZeiten(bitmaps[0])
+

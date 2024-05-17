@@ -28,22 +28,28 @@ class TextLines:
     def draw(self, x, y, bitmap, sep=3):
         drawbw = ImageDraw.Draw(bitmap)
         for i,line in enumerate(self.lines):
-            drawbw.text((x,y), line.text, font=line.font, fill="black")
-            y+=self.boxes[1]+sep
+            drawbw.multiline_text((x,y), line['text'], font=line['font'], fill="black")
+            print(f"draw at {x},{y} string ->{line['text']}<-")
+            y+=self.boxes[i][1]+sep
 
 class Column:
     def __init__(self):
-        self.rows = []
-        self.separators = []
+        self.rows:list[TextLines] = []
+        self.separators:list[int] = []
 
     def addRow(self, lines:TextLines, separator=5):
-        self.rows.appen(lines)
+        self.rows.append(lines)
         self.separators.append(separator)
 
     def getBox(self):
-        w = min([line.box[0] for line in self.lines])
-        h = sum([line.box[1] for line in self.lines])+sum(self.separators[0:-1])
+        w = min([line.box[0] for line in self.rows])
+        h = sum([line.box[1] for line in self.rows])+sum(self.separators[0:-1])
         return (w,h)
+
+    def draw(self, x, y, bitmap):
+        for i,row in enumerate(self.rows):
+            row.draw(x,y,bitmap, self.separators[i])
+            y += row.box[1]+self.separators[i]
 
 
 def get_text_dimensions(text_string: str, font: ImageFont) -> list[int]:
