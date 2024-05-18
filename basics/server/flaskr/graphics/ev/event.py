@@ -2,26 +2,30 @@ from datetime import datetime
 #from typing import Self
 
 class Event:
-    def __init__(self, tree):
+    def __init__(self, tree, noneReplacer="n/a"):
+        def noneRep(s:str)->str:
+            if s==None:
+                return noneReplacer
+            return s
         start_date = tree.find(".//start_date").text
         self.start_datetime: datetime = datetime.strptime(start_date, '%Y-%m-%d %H:%M')
         end_date = tree.find(".//end_date").text
         self.end_datetime: datetime = datetime.strptime(end_date, '%Y-%m-%d %H:%M')
         self.text: str = tree.find('.//text').text
         self.color: str = tree.find('.//color').text
-        self.klasse: str | None = tree.find('.//klasse').text
+        self.klasse: str = tree.find('.//klasse').text
         if self.klasse:
             self.klassekurz: str = self.klasse.replace("*","")
         else:
-            self.klassekurz = None
-        self.fachkuerzel: str = tree.find('.//fachkuerzel').text
+            self.klassekurz = noneRep(None)
+        self.fachkuerzel: str = noneRep(tree.find('.//fachkuerzel').text)
         self.lehrerkuerzelname: str | None = tree.find('.//lehrerkuerzelname').text
         if self.lehrerkuerzelname:
             self.lehrername = self.lehrerkuerzelname[0:self.lehrerkuerzelname.find("(")]
         else:
-            self.lehrername = None
-        self.lehrerkuerzel: str = tree.find('.//lehrerkuerzel').text
-        self.reservator: str = tree.find('.//reservator').text
+            self.lehrername = noneRep(None)
+        self.lehrerkuerzel: str = noneRep(tree.find('.//lehrerkuerzel').text)
+        self.reservator: str = noneRep(tree.find('.//reservator').text)
 
         if (self.start_datetime>self.end_datetime):
             raise RuntimeError("Ende vor Start...")

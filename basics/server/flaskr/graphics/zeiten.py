@@ -23,7 +23,7 @@ def rasterTextKSBG() -> list[list[str]]:
     r = []
     for s in rasterZeiten:
         e = addDelta(s,timedelta(minutes=45))        
-        r.append([s.strftime("%H:%M"), e.strftime(" - %H:%M")])
+        r.append([s.strftime("%H:%M"), e.strftime("- %H:%M")])
     return r
 
 def rasterTextISME() -> list[list[str]]:
@@ -43,15 +43,20 @@ def addDelta(zeit:time, delta:timedelta) -> time:
      return (timeToDateTime(zeit)+delta).time()
 
 def getRasterPosition(zeit:time) -> float:
+    print(f"getRasterPosition({zeit})")
     if (zeit<rasterZeiten[0]):
+         print("   zu früh -> 0")
          return 0.0
     if (zeit>rasterZeiten[-1]):
          delta = timeDifference(rasterZeiten[-1], zeit)
          if delta.seconds>45*60:
+            print(f"   zu spät -> {len(rasterZeiten)}")
             return len(rasterZeiten)
+         print(f"   zu spät, interpoliert:-> {len(rasterZeiten)-1 + delta.seconds/(45*60)}")
          return len(rasterZeiten)-1 + delta.seconds/(45*60)
-    startIndex = min([i for i in range(len(rasterZeiten)) if rasterZeiten[i]<=zeit])
+    startIndex = min([i for i in range(len(rasterZeiten)) if rasterZeiten[i]>=zeit])
     delta = timeDifference(rasterZeiten[startIndex], zeit)
+    print(f"   startIndex={startIndex}, -> delta={delta}  (time at index:{rasterZeiten[startIndex]})")
     return startIndex + delta.seconds/(45*60)
     
 
