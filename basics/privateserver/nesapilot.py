@@ -108,13 +108,13 @@ class NesaPilot:
         return self.rooms
 
 
-    def getRoomAjaxLink(self, numdays=7):
+    def getRoomAjaxLink(self, deltaWeek=0):
         source = html.tostring(self.lastpage).decode("utf-8")
         # js-Code in the form let url = "scheduler_processor.php?view="+view+"&curr_date="+curr_date+"&min_date="+min_date+"&max_date="+max_date+"&ansicht=raumansicht&id=abece56196bce8a8&transid=e7aa0e&pageid=22204";
         paramurl = re.search("let url = \"(scheduler_processor.php\?view=.*)\";", source).group(1)
         curr_date = date.today()
-        min_date = curr_date - timedelta(days=curr_date.weekday())
-        max_date = min_date + timedelta(days=numdays-1)
+        min_date = curr_date + timedelta(days=-curr_date.weekday()+deltaWeek*7)
+        max_date = min_date + timedelta(days=6)
 
         r = [['"+view+"', "week"],
             ['"+curr_date+"', str(curr_date)],
@@ -124,7 +124,7 @@ class NesaPilot:
         return paramurl
                 
 
-    def getRooms(self, roomlist, numDays=7):
+    def getRooms(self, roomlist, numWeeks=2):
         update_rooms = []
         if not os.path.exists("roomdata"):
             os.mkdir("roomdata")
@@ -138,29 +138,22 @@ class NesaPilot:
             if not room in self.rooms:  # Does this room even exist?
                 print(f"Raum {room} ist nicht in der Liste der Räume. Vorhandene Räume:\n{self.rooms.keys()}")
                 continue
-            # Load room page
-            print(f"--> Seite für den Raum {room} laden... <--")
-            self.execCurl("generic.curl", [["MYURL",self.nav['Raumpläne']+f"&listindex_s={self.rooms[room]}&subFilter="]])
-            # Extract Ajax Link for this room
-            ajaxURL = self.getRoomAjaxLink(numDays)
-            # Make Ajax Request
-            print(f"--> XML-Daten für Raum {room} laden... <--")
-            xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
-            # Save xml-Document
-            new_datei = f"roomdata/{room}_new.xml"
-            datei = f"roomdata/{room}.xml"
-            with open(new_datei, "wb") as f:
-                f.write(html.tostring(xml))
-            # overwrite room.xml if they differ
-            if not os.path.isfile(datei) or not filecmp.cmp(new_datei, datei):
-                with open(datei, "wb") as f:
+            for w in range(numWeeks):
+                # Load room page
+                print(f"--> Seite für den Raum {room} laden... <--")
+                self.execCurl("generic.curl", [["MYURL",self.nav['Raumpläne']+f"&listindex_s={self.rooms[room]}&subFilter="]])
+                # Extract Ajax Link for this room
+                ajaxURL = self.getRoomAjaxLink(deltaWeek=w)
+                # Make Ajax Request
+                print(f"--> XML-Daten für Raum {room} mit wochenoffset={w} laden... <--")
+                xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
+                # Save xml-Document
+                datei = f"roomdata/{room}.xml"
+                mode = "wb" if w==0 else "ab"
+                with open(datei, mode) as f:
                     f.write(html.tostring(xml))
-                update_rooms.append(room)
-                print(f"--> Saved plan to {datei} 3 Sekunden warten... <--")
-            else:
-                print(f"--> {datei} hat sich nicht geändert. 3 Sekunden warten... <--")
-            os.remove(new_datei)
-            time.sleep(3)
+                print(f"--> Saved plan to {datei} mit mode={mode} 3 Sekunden warten... <--")
+                time.sleep(3)
         return update_rooms
 
 
@@ -172,7 +165,7 @@ if __name__== "__main__":
     roomnames = requests.get(f"{site}", auth=auth).content.decode('utf8')
     roomnames = roomnames.split("\n")[:-1]
     print(f"Got he following roomnames: {roomnames}")
-    roomnames = pilot.getRooms(roomnames, 14)
+    roomnames = pilot.getRooms(roomnames, 2)
 
     # post request with all xml files
     for room in roomnames:
