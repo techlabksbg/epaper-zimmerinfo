@@ -77,13 +77,14 @@ String batterie_messung() {
 void antwort(String response, UBYTE *BlackImage, int ImageSize){
   int pos = 0;
   Serial.println(response);
-  Serial.print("substr -> ");
-  Serial.println(response.substring(13,35));
   while (pos<response.length()) {
     int zeilenende = response.indexOf('\n', pos);
+    if (zeilenende<0) {
+      zeilenende = response.length();
+    }
     int keyende = response.indexOf(' ', pos);
-    if (zeilenende<0 || keyende<0) {
-      errorScreen(String("No newline at end of http response, or missing space in line"), BlackImage, ImageSize);
+    if (keyende<0) {
+      errorScreen(String("Missing space in line"), BlackImage, ImageSize);
     }
     String key = response.substring(pos, keyende);
     String value = response.substring(keyende+1, zeilenende);
