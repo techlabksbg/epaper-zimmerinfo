@@ -4,7 +4,7 @@ from . import deutsch
 
 class Day:
     def __init__(self, date:date):
-        self.events: = []
+        self.events = []
         self.date:date = date
 
     def add(self, event:Event):
