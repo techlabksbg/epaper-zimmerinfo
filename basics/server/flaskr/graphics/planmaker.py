@@ -25,7 +25,7 @@ def planmaker(xmldatei, heute, zimmertitel, zimmername, battery, outputdirAndPre
     with open(outputdirAndPrefix+".bin", "wb") as f:
         b = imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1], resolution)
         res=0
-        for c in bytearray(b):
+        for c in b:
             f.write(c)
             res+=1
         print(f"planmaker:: I have {len(b)} bytes to write... into {outputdirAndPrefix}.bin  ->res={res}", file=sys.stderr)
