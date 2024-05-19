@@ -1,5 +1,6 @@
 from PIL import Image, ImageOps
 import numpy as np
+import sys
 
 def newBWimage(size=(800,480)):
     """
@@ -23,9 +24,9 @@ def bw_rw2bin(bw, rw, size=(800,480)):
     """
     #bw = bw.composite(bw, )
     if (bw.size!=size):
-        bw = resizeAndCenter(bw)
+        bw = resizeAndCenter(bw, size)
     if (rw.size!=size):
-        rw = resizeAndCenter(rw)
+        rw = resizeAndCenter(rw, size)
     if (bw.format!="1"):
         bw = bw.convert("1")
     if (rw.format!="1"):
@@ -36,7 +37,7 @@ def bw_rw2bin(bw, rw, size=(800,480)):
     r = np.array(rw)
     r[:,:][b[:,:]==0] = 1
     rw = Image.fromarray(r)
-
+    print(f"bw_rw2bin len(bw)={len(bw.to_bytes())} len(rw)={len(rw.to_bytes())}", file=sys.stderr)
     return bytes(bw.tobytes())+bytes(rw.tobytes())
 
 def bw_rw2rgb(bw, rw, size=(800,480)):
