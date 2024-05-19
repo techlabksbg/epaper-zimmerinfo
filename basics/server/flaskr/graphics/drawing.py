@@ -37,8 +37,8 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
             return makeTextISME(event,compression)
         return makeTextReserved(event,compression)        
 
-    def makeColumns(compressionLevelHeute:int, compressionLevelAndere:int)->list[layout.GridColumn]:
-        columns :list[layout.GridColumn]= [layout.GridColumn() for i in range(6)]
+    def makeColumns(compressionLevelHeute:int, compressionLevelAndere:int)->list:
+        columns :list= [layout.GridColumn() for i in range(6)]
         for day in week.days:
             compression = compressionLevelHeute if day.date==heute else compressionLevelAndere
             wday = day.date.weekday()
