@@ -23,12 +23,5 @@ def planmaker(xmldatei, heute, zimmertitel, zimmername, battery, outputdirAndPre
     drawing.draw(week, heute, zimmertitel, zimmername, battery, bitmaps)
     
     with open(outputdirAndPrefix+".bin", "wb") as f:
-        b = imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1], resolution)
-        res = 0
-        for i in range(len(b)):
-            f.write(b[i:i+1])
-            res+=1
-        print(f"planmaker:: I have {len(b)} bytes to write... into {outputdirAndPrefix}.bin  ->res={res}", file=sys.stderr)
-        f.close()
-
+        f.write(imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1], resolution))
     imageConversion.bw_rw2rgb(bitmaps[0], bitmaps[1], resolution).save(outputdirAndPrefix+".png")

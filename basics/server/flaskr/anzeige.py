@@ -80,8 +80,6 @@ def xml_to_bin(roomid, prefix, roomname):
     print(f"Calling planmaker(\"{prefix}.xml\", heute={date.today()}, zimmername={roomname}, zimmertitel={teacher}, battery={percentage}, outputdirAndPrefix={prefix})", file=sys.stderr)
     planmaker(xmldatei=f"{prefix}.xml", heute=date.today(), zimmername=roomname, zimmertitel=teacher, battery=percentage, outputdirAndPrefix=prefix)
 
-    with open(path, 'wb') as f:
-        f.write(b'0')
 
 
 @bp.route('/anzeige')
