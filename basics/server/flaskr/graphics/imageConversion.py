@@ -37,7 +37,7 @@ def bw_rw2bin(bw, rw, size=(800,480)):
     r = np.array(rw)
     r[:,:][b[:,:]==0] = 1
     rw = Image.fromarray(r)
-    print(f"bw_rw2bin len(bw)={len(bw.to_bytes())} len(rw)={len(rw.to_bytes())}", file=sys.stderr)
+    print(f"bw_rw2bin len(bw)={len(bw.tobytes())} len(rw)={len(rw.tobytes())}", file=sys.stderr)
     return bytes(bw.tobytes())+bytes(rw.tobytes())
 
 def bw_rw2rgb(bw, rw, size=(800,480)):
