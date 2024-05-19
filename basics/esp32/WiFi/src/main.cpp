@@ -1,5 +1,11 @@
 #include <Arduino.h>
 #include <WiFi.h>
+/*
+The following file contains something like
+#define SSID "Lord of the Pings"
+#define PASSWD "MyPrecious"
+#define SERVERURL "https://example.com"
+*/
 #include "secrets.h"
 #include "DEV_Config.h"
 #include "EPD.h"
@@ -90,9 +96,9 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
     }
     if (key == "bild"){
       if (!value.startsWith("https://")) {
-        value = String("https://epaper.tech-lab.ch/")+value;
+        value = String(SERVERURL)+value;
       }
-      int len = httpsRequest(value,(char*)BlackImage, ImageSize*2);
+      int len = request(value,(char*)BlackImage, ImageSize*2);
       if (len!=ImageSize*2) {
         errorScreen(String("https-Request has only size ")+String(len), BlackImage, ImageSize);
       } else {
@@ -195,7 +201,7 @@ void setup(){
     Serial.println("MAC-Address");
     Serial.println(mac);
     flash(5, 10, 100);
-    int len = httpsRequest(String("https://epaper.tech-lab.ch/anzeige?mac=")+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
+    int len = request(String(SERVERURL)+"anzeige?mac="+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     flash(5,10,100);

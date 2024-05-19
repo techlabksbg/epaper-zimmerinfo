@@ -1,6 +1,6 @@
 #include <WiFiClientSecure.h>
 #include "ISRG_Root_X1.h"
-
+#include <HTTPClient.h>
 
 // From https://randomnerdtutorials.com/esp32-https-requests/
 
@@ -68,4 +68,42 @@ int httpsRequest(String url, char * buffer, int bufLen) {
     Serial.printf("Read %d Bytes into buffer\n", bytesRead);
     client.stop();
     return bytesRead;
+}
+
+// https://randomnerdtutorials.com/esp32-http-get-post-arduino/
+
+int httpRequest(String url, char * buffer, int bufLen) {
+    if (!url.startsWith("http://")) {
+        Serial.println("URL must start with http://");
+        return -1;
+    }
+    HTTPClient http;
+
+    Serial.printf("Accesssing %s\n", url.c_str());
+    http.begin(url.c_str());
+    int httpResponseCode = http.GET();
+    Serial.printf("Response Code %d\n",httpResponseCode);
+    int bytesRead = 0;
+    if (httpResponseCode>0) {
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        bytesRead = payload.length();
+        strncpy(buffer, payload.c_str(), bufLen);
+    } else {
+        Serial.print("Error code: ");
+        Serial.println(httpResponseCode);
+        return 0;
+    }
+    // Free resources
+    http.end();
+    return bytesRead;
+}
+
+int request(String url, char * buffer, int bufLen) {
+    if (url.startsWith("https://")) {
+        return httpsRequest(url, buffer, bufLen);
+    } else {
+        return httpRequest(url, buffer, bufLen);
+    }
 }
