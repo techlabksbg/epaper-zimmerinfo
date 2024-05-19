@@ -1,4 +1,4 @@
-import os
+import sys
 from lxml import etree
 
 from .ev.event import Event
@@ -23,5 +23,7 @@ def planmaker(xmldatei, heute, zimmertitel, zimmername, battery, outputdirAndPre
     drawing.draw(week, heute, zimmertitel, zimmername, battery, bitmaps)
     
     with open(outputdirAndPrefix+".bin", "wb") as f:
-        f.write(imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1], resolution))
+        b = imageConversion.bw_rw2bin(bitmaps[0], bitmaps[1], resolution)
+        print("planmaker:: I have {len(b)} bytes to write...", file=sys.stderr)
+        f.write(b)
     imageConversion.bw_rw2rgb(bitmaps[0], bitmaps[1], resolution).save(outputdirAndPrefix+".png")
