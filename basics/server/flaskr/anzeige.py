@@ -77,7 +77,7 @@ def xml_to_bin(roomid, prefix, roomname):
         percentage = voltage2percentage(volt[0])
     else:
         percentage=0.35
-    print(f"Calling planmaker(\"{prefix}.xml\", heute={date.today()}, zimmername={roomname}, zimmertitel={teacher}, battery={percentage}, outputdirAndPrefix={prefix})", file=sys.stderr))
+    print(f"Calling planmaker(\"{prefix}.xml\", heute={date.today()}, zimmername={roomname}, zimmertitel={teacher}, battery={percentage}, outputdirAndPrefix={prefix})", file=sys.stderr)
     planmaker(xmldatei=f"{prefix}.xml", heute=date.today(), zimmername=roomname, zimmertitel=teacher, battery=percentage, outputdirAndPrefix=prefix)
 
     with open(path, 'wb') as f:
