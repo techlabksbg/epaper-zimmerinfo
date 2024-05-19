@@ -7,6 +7,9 @@ def voltage2percentage(voltage):
     Input: voltage (float, typically in the range 2.5 to 4.2)
     Output: percentage as a float between 0 and 1
     """
+    if not voltage:
+        return 0.0
+
     percentiles = [[3.95 ,90.00],
     [3.9,80.00],
     [3.85,50.00],
