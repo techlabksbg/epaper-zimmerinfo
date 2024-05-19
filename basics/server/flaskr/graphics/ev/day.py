@@ -4,7 +4,7 @@ from . import deutsch
 
 class Day:
     def __init__(self, date:date):
-        self.events: list[Event] = []
+        self.events: = []
         self.date:date = date
 
     def add(self, event:Event):
@@ -14,7 +14,7 @@ class Day:
         self.events.sort(key = lambda e : e.start_datetime)
         return self
 
-    def firstAndLastStart(self) -> tuple[datetime, datetime]:
+    def firstAndLastStart(self) -> tuple:
         start = min([e.start_datetime for e in self.events])
         laststart = max([e.start_datetime for e in self.events])
         return start, laststart
