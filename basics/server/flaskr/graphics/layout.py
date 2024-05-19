@@ -22,7 +22,7 @@ class TextLines:
         self.getBox()
 
     
-    def getBox(self, sep=3) -> tuple[int,int]:
+    def getBox(self, sep=3) -> tuple:
         self.box = (max([b[0] for b in self.boxes]),sum([b[1] for b in self.boxes])+len(self.boxes)*sep)
         return self.box
 
@@ -34,8 +34,8 @@ class TextLines:
 
 class Column:
     def __init__(self):
-        self.rows:list[TextLines] = []
-        self.separators:list[int] = []
+        self.rows:list = []
+        self.separators:list = []
         self.gridY= []
 
     def add(self, lines:TextLines, separator=5):
@@ -61,8 +61,8 @@ class Column:
 
 class GridColumn:
     def __init__(self):
-        self.rows:list[TextLines] = []
-        self.gridY:list[float] = []
+        self.rows:list = []
+        self.gridY:list = []
 
     def add(self, lines:TextLines, gridY:float):
         self.rows.append(lines)
@@ -82,18 +82,18 @@ class GridColumn:
     def getWidth(self):
         return max([line.box[0] for line in self.rows])
 
-def columnsSetXc(columns: list[GridColumn], x:int=0, sep:int=5)->list[int]:
+def columnsSetXc(columns: list, x:int=0, sep:int=5)->list:
     xc=[x]
     for j, col in enumerate(columns):
         xc.append(xc[-1]+col.getWidth()+sep)
     return xc
 
 
-def drawColumnSet(columns: list[GridColumn], xc, yc, bitmap, sep=3):
+def drawColumnSet(columns: list, xc, yc, bitmap, sep=3):
     for j, col in enumerate(columns):
         col.draw(xc[j]+sep,yc,bitmap)
 
-def get_text_dimensions(text_string: str, font: ImageFont) -> list[int]:
+def get_text_dimensions(text_string: str, font: ImageFont) -> list:
     if (text_string==None or len(text_string)==0):
         return (0,0)
     # https://stackoverflow.com/a/46220683/9263761
