@@ -44,9 +44,11 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
             wday = day.date.weekday()
             if wday==6:
                 continue
-            print(f"{day.date} -> wday={wday}")
             head = layout.TextLines()
-            head.add(deutsch.wochentagDatum(day.date), fontSet.normal)
+            if (len(day.events)==0):
+                head.add(deutsch.wochentagDatumKurz(day.date), fontSet.normal)
+            else:
+                head.add(deutsch.wochentagDatum(day.date), fontSet.normalBold)
             columns[wday].add(head,0)
             for event in day.events:
                 gridY = zeiten.getRasterPosition(event.start_datetime.time())+1
@@ -72,7 +74,7 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
 
     def title():
         title = layout.TextLines()
-        title.add(zimmertitel, fontSet.normal)
+        title.add(zimmertitel, fontSet.largeBold)
         return title
     
     def datum(bitmap):
@@ -91,7 +93,15 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
         for x in xc:
             drawbw.line(((x,yc[0]),(x,479)),width=1,fill="black")
 
-                    
+    def redRect(a,b,x,y):
+        drawbw = ImageDraw.Draw(bitmaps[1])
+        drawbw.rectangle((a,b,x,y), fill="black")
+
+    def redFill(a,b,xx,yy, fib1, fib2):
+        drawbw = ImageDraw.Draw(bitmaps[1])
+        for y in range(b+1,yy):
+            for x in range(a+(y*fib1)%fib2, xx, fib2):
+                drawbw.point((x,y),fill="black")
 
     resolution = bitmaps[0].size
     firstCol = ksbgZeiten(bitmaps[0])
@@ -101,6 +111,10 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
     xc = layout.columnsSetXc(columns, planStart)
     layout.drawColumnSet(columns, xc, yc, bitmaps[0])
     grid(bitmap=bitmaps[0], xc=xc, yc=yc)
+    title().draw(3,3,bitmaps[0])
+    datum(bitmaps[0])
+    redRect(xc[4],yc[4],xc[5],yc[5])
+    redFill(xc[2],yc[4],xc[3],yc[5], 8,13)
 
 
 

@@ -20,7 +20,6 @@ def datum(dat:date) -> str:
 
 def lehrerName(name:str, level:int = 0) -> str:
     name = name.strip()
-    print(f"->{name}<-")
     if (level==0):
         return name
     if (level==1):

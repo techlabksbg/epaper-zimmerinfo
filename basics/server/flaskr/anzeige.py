@@ -5,6 +5,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 from datetime import datetime
+from datetime import date
 import os
 
 from flaskr.__init__ import basic_auth
@@ -15,6 +16,8 @@ from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
 from flaskr.voltage2percentage import voltage2percentage
 from flaskr.datalogic import id_for_mac, calc_firmware_update
+
+from flaskr.graphics.planmaker import planmaker
 
 
 bp = Blueprint('anzeige', __name__)
@@ -57,7 +60,7 @@ def calc_image_update(macid, hash):
     return roomid, hash_db
 
 
-def xml_to_bin(roomid):
+def xml_to_bin(roomid, prefix, roomname):
     db = get_db()
     path = f"flaskr/static/rooms/{roomid}/data.bin"
     macid = db.execute('SELECT id FROM mac WHERE roomid = ?', (roomid,)).fetchone()
@@ -66,10 +69,15 @@ def xml_to_bin(roomid):
     macid = macid[0]
 
     teacher = db.execute('SELECT teacher FROM room WHERE id = ?', (roomid,)).fetchone()[0]
-
+    if not teacher:
+        teacher = "n/a"
     volt = db.execute('SELECT volt, statusTime FROM volt WHERE macid = ? ORDER BY(statusTime) DESC', (macid,)).fetchone()
-
-    #percentage = voltage2percentage(volt[0])
+    if volt and len(volt)>0 and volt[0]:
+        percentage = voltage2percentage(volt[0])
+    else:
+        percentage=0.35
+    print(f"Calling planmaker(\"{prefix}.xml\", heute={date.today()}, zimmername={roomname}, zimmertitel={teacher}, battery={percentage}, outputdirAndPrefix={prefix})")
+    planmaker(xmldatei=f"{prefix}.xml", heute=date.today(), zimmername=roomname, zimmertitel=teacher, battery=percentage, outputdirAndPrefix=prefix)
 
     with open(path, 'wb') as f:
         f.write(b'0')
@@ -114,8 +122,9 @@ def xml():
         db = get_db()
         roomid = db.execute('SELECT id FROM room WHERE roomname = ?', (roomname, )).fetchone()
         if (roomid!=None):
-            xmldata.save(f"{current_app.config['ROOMS_FOLDER']}/{roomid[0]}/data.xml")
-            xml_to_bin(roomid[0])
+            prefix = f"{current_app.config['ROOMS_FOLDER']}/{roomid[0]}/data"
+            xmldata.save(f"{prefix}.xml")
+            xml_to_bin(roomid[0], prefix, roomname)
             return "OK"
         else:
             return "No such room!"
