@@ -107,7 +107,7 @@ def index():
 
     sleep_time = calculate_sleep_time()
     print(f"calculated sleep-time: {sleep_time} s = {sleep_time//60} min = {sleep_time//3600} h", file=sys.stderr)
-    sleep_time = 120 # for testing purposes
+    #sleep_time = 120 # for testing purposes
 
     print(f"response to display: firmware={update_firmware}, roomid={roomid}, macid={macid}, sleep_time={sleep_time}, hash={hash_db}", file=sys.stderr)
     return render_template('anzeige/index.html', firmware=update_firmware, roomid=roomid, macid=macid, sleep_time=sleep_time, hash=hash_db)
