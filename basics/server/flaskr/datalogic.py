@@ -1,4 +1,4 @@
-import os
+import os,sys
 
 from flaskr.db import get_db
 from flask import current_app
@@ -52,6 +52,7 @@ def calc_firmware_update(firmware):
     if (firmware == None):
         return -1
     path = current_app.config['FIRMWARE_FOLDER']
+    print(f"Checking for firmwar in {path}", file=sys.stderr)
     files = os.listdir(path)
 
     latest_version = firmware
@@ -61,8 +62,8 @@ def calc_firmware_update(firmware):
             continue
 
         version = file.split('.')[0]
-        print(version)
-        print(firmware)
+        print(version, file=sys.stderr)
+        print(firmware, file=sys.stderr)
 
         if (version > firmware):
             latest_version = max(latest_version, version)

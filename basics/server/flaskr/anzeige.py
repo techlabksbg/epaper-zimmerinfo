@@ -11,7 +11,7 @@ import os,sys
 
 from flaskr.__init__ import basic_auth
 from flaskr.db import get_db
-from flaskr.misc import times
+from flaskr.misc import updatesToday
 from flaskr.plotting import plot_voltage
 from flaskr.convert_to_bin import convert_to_bin
 from flaskr.logs import get_hash
@@ -26,7 +26,7 @@ bp = Blueprint('anzeige', __name__)
 def calculate_sleep_time():
     current_time = datetime.now()
     sleep_time = 0
-    for time in times:
+    for time in updatesToday():
         if (current_time < time):
             sleep_time = (time - current_time).seconds
             break
@@ -106,8 +106,10 @@ def index():
         plot_graph(macid, mac)
 
     sleep_time = calculate_sleep_time()
+    print(f"calculated sleep-time: {sleep_time} s = {sleep_time//60} min = {sleep_time//3600} h", file=sys.stderr)
     sleep_time = 120 # for testing purposes
 
+    print(f"response to display: firmware={update_firmware}, roomid={roomid}, macid={macid}, sleep_time={sleep_time}, hash={hash_db}", file=sys.stderr)
     return render_template('anzeige/index.html', firmware=update_firmware, roomid=roomid, macid=macid, sleep_time=sleep_time, hash=hash_db)
 
 @bp.route('/xml', methods=['POST', 'GET'])
