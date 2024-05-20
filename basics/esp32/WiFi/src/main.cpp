@@ -106,10 +106,10 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
         //hier kann WiFI abgeschaltet werden
         Serial.println("Displaying graphics");
         EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
-        DEV_Delay_ms(2000);
+        EPD_7IN5B_V2_Sleep();
       }
     }
-    if (key=="bildhash"){
+    if (key=="hash"){
       if (value.length()<20) {
         strncpy(bildhash, value.c_str(), 19);
         Serial.print("Set bildhash to ");
@@ -149,6 +149,7 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
   printf("EPD_Display\r\n");
   EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
+  EPD_7IN5B_V2_Sleep();
   goToSleep(60*(1<<nocon));
 }
 
@@ -202,7 +203,7 @@ void setup(){
     Serial.println("MAC-Address");
     Serial.println(mac);
     flash(5, 10, 100);
-    int len = request(String(SERVERURL)+"anzeige?mac="+mac+"&volt="+batterie_messung()+"&bildhash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
+    int len = request(String(SERVERURL)+"anzeige?mac="+mac+"&volt="+batterie_messung()+"&hash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     flash(5,10,100);

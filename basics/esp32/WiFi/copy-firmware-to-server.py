@@ -14,7 +14,7 @@ print(cmd)
 os.system(cmd)
 binfile = ".pio/build/esp32doit-devkit-v1/firmware.bin"
 if os.path.exists(binfile):
-    cmd = f"scp {binfile} ef:epaper/epaper-zimmerinfo/basics/server/flaskr/static/{firmware}.bin"
+    cmd = f"scp {binfile} ef:epaper/epaper-zimmerinfo/basics/server/flaskr/static/firmware/{firmware}.bin"
     print(cmd)
     os.system(cmd)
 else:
