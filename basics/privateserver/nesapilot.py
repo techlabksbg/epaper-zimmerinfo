@@ -8,7 +8,7 @@ import re
 from datetime import date, timedelta
 import time
 import requests
-import filecmp
+import sys
 
 if not os.path.exists("mysecrets.py"):
     with open("mysecrets.py", "w") as f:
@@ -114,13 +114,14 @@ class NesaPilot:
         paramurl = re.search("let url = \"(scheduler_processor.php\?view=.*)\";", source).group(1)
         curr_date = date.today()
         min_date = curr_date + timedelta(days=-curr_date.weekday()+deltaWeek*7)
-        max_date = min_date + timedelta(days=6)
-
+        max_date = min_date + timedelta(days=7)
+        print(f"preparing link for min_date={min_date} to max_date={max_date}")
         r = [['"+view+"', "week"],
             ['"+curr_date+"', str(curr_date)],
             ['"+min_date+"', str(min_date)],
             ['"+max_date+"', str(max_date)]]
         paramurl = self.baseurl + self.applyAllReplacements(paramurl, r)
+        print(f"-> {paramurl}")
         return paramurl
                 
 
@@ -138,6 +139,8 @@ class NesaPilot:
             if not room in self.rooms:  # Does this room even exist?
                 print(f"Raum {room} ist nicht in der Liste der Räume. Vorhandene Räume:\n{self.rooms.keys()}")
                 continue
+            update_rooms.append(room)
+            xmldata = b""
             for w in range(numWeeks):
                 # Load room page
                 print(f"--> Seite für den Raum {room} laden... <--")
@@ -147,13 +150,16 @@ class NesaPilot:
                 # Make Ajax Request
                 print(f"--> XML-Daten für Raum {room} mit wochenoffset={w} laden... <--")
                 xml = self.execCurl("generic.curl", [["MYURL",ajaxURL]], False)
-                # Save xml-Document
-                datei = f"roomdata/{room}.xml"
-                mode = "wb" if w==0 else "ab"
-                with open(datei, mode) as f:
-                    f.write(html.tostring(xml))
-                print(f"--> Saved plan to {datei} mit mode={mode} 3 Sekunden warten... <--")
+                #print(html.tostring(xml))
+                xmldata += html.tostring(xml)
                 time.sleep(3)
+            xmldata = xmldata.replace(b"</data><data>",b"\n")
+            # Save xml-Document
+            datei = f"roomdata/{room}.xml"
+            print(f"Cleaned up xml-Data and saving it to file {datei}")
+            with open(datei, "wb") as f:
+                f.write(xmldata)
+
         return update_rooms
 
 
@@ -161,13 +167,19 @@ if __name__== "__main__":
     site = mysecrets.server_url
     auth=(mysecrets.login_web, mysecrets.password_web)
 
-    pilot = NesaPilot()
     roomnames = requests.get(f"{site}", auth=auth).content.decode('utf8')
     roomnames = roomnames.split("\n")[:-1]
     print(f"Got he following roomnames: {roomnames}")
-    roomnames = pilot.getRooms(roomnames, 2)
+    if len(roomnames)==0:
+        print("No rooms to fetch. Abort")
+        exit()
+
+    if len(sys.argv)<2 or sys.argv[1]!="--fast":
+        pilot = NesaPilot()
+        roomnames = pilot.getRooms(roomnames, 2)
 
     # post request with all xml files
     for room in roomnames:
         datei = f"roomdata/{room}.xml"
+        print(f"Posting {datei}")
         requests.post(f"{site}?roomname={room}", files={'file': open(datei, 'r')}, auth=auth)
