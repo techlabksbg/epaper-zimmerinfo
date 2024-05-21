@@ -12,6 +12,9 @@ class Event:
         end_date = tree.find(".//end_date").text
         self.end_datetime: datetime = datetime.strptime(end_date, '%Y-%m-%d %H:%M')
         self.text: str = tree.find('.//text').text
+        self.kommentar: str = tree.find('.//kommentar').text
+        self.anzeigestp: str = tree.find('.//anzeigestp').text
+        self.mandantname: str = tree.find('.//mandantname').text
         self.color: str = tree.find('.//color').text
         self.klasse: str = tree.find('.//klasse').text
         if self.klasse:
@@ -19,6 +22,7 @@ class Event:
         else:
             self.klassekurz = noneRep(None)
         self.fachkuerzel: str = noneRep(tree.find('.//fachkuerzel').text)
+        self.kurskuerzel: str = noneRep(tree.find('.//kurskuerzel').text)
         self.lehrerkuerzelname: str | None = tree.find('.//lehrerkuerzelname').text
         if self.lehrerkuerzelname:
             self.lehrername = self.lehrerkuerzelname[0:self.lehrerkuerzelname.find("(")]
@@ -26,6 +30,8 @@ class Event:
             self.lehrername = noneRep(None)
         self.lehrerkuerzel: str = noneRep(tree.find('.//lehrerkuerzel').text)
         self.reservator: str = noneRep(tree.find('.//reservator').text)
+        self.reservation: str = noneRep(tree.find('.//reservation').text)
+        self.istrv: str = noneRep(tree.find('.//istrv').text)
 
         if (self.start_datetime>self.end_datetime):
             raise RuntimeError("Ende vor Start...")

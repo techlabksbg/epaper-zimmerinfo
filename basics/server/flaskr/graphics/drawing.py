@@ -13,7 +13,11 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
     fontSet = layout.FontCollection()
 
     def getEventType(event):
-        return "ksbg"  # isme, reserved
+        if event.mandantname=="isme":
+            return "isme"
+        if event.reservation=="1":
+            return "reserved"
+        return "ksbg" 
 
     def makeTextKSBG(event: Event, compression) -> layout.TextLines:
         lines = layout.TextLines()
@@ -25,10 +29,27 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
         return lines
         
         return 
-    def makeTextISME(event: Event) -> layout.TextLines:
-        return 
-    def makeTextReserved(event: Event) -> layout.TextLines:
-        return 
+    def makeTextISME(event: Event, compression) -> layout.TextLines:
+        lines = layout.TextLines()
+        lines.add(f"{event.kurskuerzel}", fontSet.normalBold)
+        if (compression<20):
+            lines.add(deutsch.lehrerName(event.lehrername, compression), fontSet.normal)
+        else:
+            lines.add(f"{event.lehrerkuerzel}", fontSet.normal)
+        return lines
+
+    def makeTextReserved(event: Event, compression) -> layout.TextLines:
+        lines = layout.TextLines()
+        print(f"text={event.text}")
+        print(f"kommentar={event.kommentar}")
+        print(f"anzeigestp={event.anzeigestp}")
+        if event.text:
+            lines.add(f"{event.text}", fontSet.normal)
+        elif event.kommentar:
+            lines.add(f"{event.text}", fontSet.normal)
+        elif event.kommentar:
+            lines.add(event.anzeigestp, fontSet.normal)
+        return lines
 
     def makeText(event:Event, compression:int) -> layout.TextLines:
         if getEventType(event)=="ksbg":
