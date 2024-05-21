@@ -5,3 +5,4 @@ flaskr/static/uploads/
 flaskr/static/binaries/
 flaskr/static/firmware/
 flaskr/mysecrets.py
+log.log
