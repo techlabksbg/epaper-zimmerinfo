@@ -167,7 +167,11 @@ if __name__== "__main__":
     site = mysecrets.server_url
     auth=(mysecrets.login_web, mysecrets.password_web)
 
-    roomnames = requests.get(f"{site}", auth=auth).content.decode('utf8')
+    response = requests.get(f"{site}", auth=auth)
+    if (response.status_code!=200):
+        print(f"Got http status code {response.status_code} from {site}")
+        exit()
+    roomnames = response.content.decode('utf8')
     roomnames = roomnames.split("\n")[:-1]
     print(f"Got he following roomnames: {roomnames}")
     if len(roomnames)==0:
