@@ -1,4 +1,4 @@
-from datetime import datetime, deltatime
+from datetime import datetime, timedelta
 from PIL import ImageDraw
 
 from .ev.day import Day
@@ -20,7 +20,7 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
         rpos = zeiten.getRasterPosition(event.start_datetime.time())
         if rpos!=int(rpos):
             return "reserved"
-        if event.end_datetime - event.start_datetime != deltatime(minutes=45):
+        if event.end_datetime - event.start_datetime != timedelta(minutes=45):
             return "reserved"
         return "ksbg" 
 
