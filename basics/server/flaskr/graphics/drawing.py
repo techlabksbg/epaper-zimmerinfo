@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, deltatime
 from PIL import ImageDraw
 
 from .ev.day import Day
@@ -16,6 +16,11 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
         if event.mandantname=="isme":
             return "isme"
         if event.reservation=="1":
+            return "reserved"
+        rpos = zeiten.getRasterPosition(event.start_datetime.time())
+        if rpos!=int(rpos):
+            return "reserved"
+        if event.end_datetime - event.start_datetime != deltatime(minutes=45):
             return "reserved"
         return "ksbg" 
 
@@ -77,7 +82,7 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
                 columns[wday].add(text, gridY)
         return columns
 
-    def ksbgZeiten(bitmap) -> layout.Column:
+    def ksbgZeiten(bitmap, xoffset=30) -> layout.Column:
         col = layout.Column()
         # Zimmername
         head = layout.TextLines()
@@ -90,7 +95,7 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
             tl.add(lines[1], fontSet.small)
             tl.getBox(2)
             col.add(tl,3+zeiten.separatorenKSBG[i])
-        col.draw(2,479-col.getBox()[1], bitmap) 
+        col.draw(xoffset,479-col.getBox()[1], bitmap) 
         return col
 
     def title():
@@ -125,17 +130,18 @@ def draw(week: Week, heute, zimmertitel, zimmername, battery, bitmaps):
                 drawbw.point((x,y),fill="black")
 
     resolution = bitmaps[0].size
+    xoffset = 30
     firstCol = ksbgZeiten(bitmaps[0])
-    planStart = firstCol.getBox()[0]+3
+    planStart = firstCol.getBox()[0]+xoffset+3
     yc = firstCol.getYCoordinates(resolution[1]-3-firstCol.getBox()[1])
     columns = makeColumns(0,20)
     xc = layout.columnsSetXc(columns, planStart)
     layout.drawColumnSet(columns, xc, yc, bitmaps[0])
     grid(bitmap=bitmaps[0], xc=xc, yc=yc)
-    title().draw(3,3,bitmaps[0])
+    title().draw(xoffset+3,3,bitmaps[0])
     datum(bitmaps[0])
-    redRect(xc[4],yc[4],xc[5],yc[5])
-    redFill(xc[2],yc[4],xc[3],yc[5], 8,13)
+    #redRect(xc[4],yc[4],xc[5],yc[5])
+    #redFill(xc[2],yc[4],xc[3],yc[5], 8,13)
 
 
 
