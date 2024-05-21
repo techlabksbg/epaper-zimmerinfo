@@ -103,8 +103,13 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
       if (len!=ImageSize*2) {
         errorScreen(String("https-Request has only size ")+String(len), BlackImage, ImageSize);
       } else {
+        WiFi.disconnect(true);
+        WiFi.mode(WIFI_OFF);
         //hier kann WiFI abgeschaltet werden
         Serial.println("Displaying graphics");
+        DEV_Module_Init();
+        EPD_7IN5B_V2_Init();
+        //EPD_7IN5B_V2_Clear();
         EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
         EPD_7IN5B_V2_Sleep();
       }
@@ -147,9 +152,15 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
   printf("EPD_Display\r\n");
+  DEV_Module_Init();
+  EPD_7IN5B_V2_Init();
+  //EPD_7IN5B_V2_Clear();
   EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
   EPD_7IN5B_V2_Sleep();
+  delay(1000);
   goToSleep(60*(1<<nocon));
 }
 
@@ -162,15 +173,12 @@ void setup(){
   Serial.println(WiFi.macAddress());
   pinMode(BUILTIN_LED, OUTPUT);
   flash(2, 20, 300);
-  printf("EPD_7IN5B_V2_test Demo\r\n");
-  DEV_Module_Init();
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
     bildhash[0]=0;
     nocon=0;
   }
 
   printf("e-Paper Init and Clear...\r\n");
-  EPD_7IN5B_V2_Init();
   //EPD_7IN5B_V2_Clear();
   DEV_Delay_ms(500);
   UBYTE *BlackImage, *RYImage;
