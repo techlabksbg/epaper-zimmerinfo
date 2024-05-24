@@ -19,6 +19,7 @@ The following file contains something like
 #include "httpsRequest.h"
 #include "httpsota.h"
 #include "firmware-version.h"
+#include "drawBattery.h"
 
 
 RTC_DATA_ATTR int nocon;
@@ -61,8 +62,9 @@ void initWiFi() {
   }
 }
 
+double voltage=0.0;
 //from basics/esp32/batterie_messung
-String batterie_messung() {
+float batterie_messung() {
   int bat = 0;
   for (int i=0; i<100; i++) {
     bat += analogRead(BATPIN);
@@ -70,8 +72,8 @@ String batterie_messung() {
   }
   // 227056 sollte 4.055 V sein
   // 188410 sollte 3.405 V sein
-  float vbat = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
-  return String(vbat);
+  voltage = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
+  return voltage;
 }
 
 void antwort(String response, UBYTE *BlackImage, int ImageSize){
@@ -109,6 +111,7 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
         Serial.println("Displaying graphics");
         DEV_Module_Init();
         EPD_7IN5B_V2_Init();
+        drawBattery(voltage, 740,3, BlackImage, BlackImage+ImageSize);
         //EPD_7IN5B_V2_Clear();
         EPD_7IN5B_V2_Display(BlackImage, BlackImage+ImageSize);
         EPD_7IN5B_V2_Sleep();
@@ -138,7 +141,7 @@ void goToSleep(long long time){
 void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   nocon = nocon+1;
   String MAC = "MAC: " + String(WiFi.macAddress());
-  String battery = "Batteriespannung: " + batterie_messung() + "V";
+  String battery = "Batteriespannung: " + String(voltage) + "V";
   // Set images to white here!
   printf("NewImage:BlackImage and RYImage\r\n");
   Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
@@ -152,6 +155,9 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   Paint_DrawString_EN(100,150, "SSID " SSID, &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,180, MAC.c_str(), &Font16, WHITE, BLACK);
   Paint_DrawString_EN(100,210, battery.c_str(), &Font16, WHITE, BLACK);
+
+  drawBattery(voltage, 740,10, BlackImage, BlackImage+ImageSize);
+
   WiFi.disconnect(true);
   WiFi.mode(WIFI_OFF);
   printf("EPD_Display\r\n");
@@ -171,6 +177,9 @@ void setup(){
   Serial.begin(115200);
   Serial.println("MAC-Address:");
   Serial.println(WiFi.macAddress());
+  batterie_messung();
+  //voltage = 3.7;
+  Serial.printf("Batterie-Spannung: %.2fV -> %d%%\n",voltage,percentage(voltage));
   pinMode(BUILTIN_LED, OUTPUT);
   flash(2, 20, 300);
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
@@ -211,7 +220,7 @@ void setup(){
     Serial.println("MAC-Address");
     Serial.println(mac);
     flash(5, 10, 100);
-    int len = request(String(SERVERURL)+"anzeige?mac="+mac+"&volt="+batterie_messung()+"&hash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
+    int len = request(String(SERVERURL)+"anzeige?mac="+mac+"&volt="+String(voltage)+"&hash="+bildhash+"&firmware="+FIRMWARE+"&nocon="+String(nocon), (char *)BlackImage, Imagesize*2);
     BlackImage[len]=0;
     String response = String((char*)BlackImage);
     flash(5,10,100);
