@@ -21,6 +21,10 @@ The following file contains something like
 #include "firmware-version.h"
 #include "drawBattery.h"
 
+#define POWER_PIN 32
+#define BATPIN 34
+
+
 
 RTC_DATA_ATTR int nocon;
 RTC_DATA_ATTR char bildhash[20];
@@ -47,7 +51,6 @@ void fadeout() {
   }
 }
 
-#define BATPIN 34
 void initWiFi() {
   Serial.println(SSID);
   WiFi.mode(WIFI_STA);
@@ -63,16 +66,17 @@ void initWiFi() {
 }
 
 double voltage=0.0;
+int adValue = 0;
 //from basics/esp32/batterie_messung
 float batterie_messung() {
-  int bat = 0;
+  adValue = 0;
   for (int i=0; i<100; i++) {
-    bat += analogRead(BATPIN);
+    adValue += analogRead(BATPIN);
     delay(10);
   }
   // 227056 sollte 4.055 V sein
   // 188410 sollte 3.405 V sein
-  voltage = (float)(bat-188410)/(227056-188410)*(4.055-3.405)+3.405;
+  voltage = (float)(adValue-188410)/(227056-188410)*(4.055-3.405)+3.405;
   return voltage;
 }
 
@@ -134,6 +138,8 @@ void antwort(String response, UBYTE *BlackImage, int ImageSize){
 void goToSleep(long long time){
   Serial.printf("Going deepsleep for %d seconds", time);
   fadeout();
+  digitalWrite(POWER_PIN, LOW);
+  delay(500);
   esp_sleep_enable_timer_wakeup(time*1000000ULL);
   esp_deep_sleep_start();
 }
@@ -141,7 +147,7 @@ void goToSleep(long long time){
 void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
   nocon = nocon+1;
   String MAC = "MAC: " + String(WiFi.macAddress());
-  String battery = "Batteriespannung: " + String(voltage) + "V";
+  String battery = "Batteriespannung: " + String(voltage) + "V adValue=" + String(adValue);
   // Set images to white here!
   printf("NewImage:BlackImage and RYImage\r\n");
   Paint_NewImage(BlackImage, EPD_7IN5B_V2_WIDTH, EPD_7IN5B_V2_HEIGHT , 0, WHITE);
@@ -173,13 +179,15 @@ void errorScreen(String fehler, UBYTE *BlackImage, int ImageSize) {
 void setup(){
   // Disable Brownout Detection 
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+  pinMode(POWER_PIN, OUTPUT);
+  digitalWrite(POWER_PIN, HIGH);  // Switch power on
 
   Serial.begin(115200);
   Serial.println("MAC-Address:");
   Serial.println(WiFi.macAddress());
   batterie_messung();
   //voltage = 3.7;
-  Serial.printf("Batterie-Spannung: %.2fV -> %d%%\n",voltage,percentage(voltage));
+  Serial.printf("Batterie-Spannung: %.2fV -> %d%% (from adValue=%d)\n",voltage,percentage(voltage), adValue);
   pinMode(BUILTIN_LED, OUTPUT);
   flash(2, 20, 300);
   if (esp_sleep_get_wakeup_cause()!=ESP_SLEEP_WAKEUP_TIMER){
