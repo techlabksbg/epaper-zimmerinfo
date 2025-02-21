@@ -10,6 +10,13 @@ import time
 import requests
 import sys
 
+if not os.path.exists("mysecrets.py"):
+    with open("mysecrets.py", "w") as f:
+        f.write("raise RuntimeError('bitte diese Zeile in mysecrets.py löschen und Username und Passwort eintragen')\n#Auth for epaper server and url\nlogin_web='user'\npassword_web='pass'\nserver_url='http://127.0.0.1:5000/xml'\n")
+    raise RuntimeError("Die Datei mysecrets.py wurde angelegt. Bitte bearbeiten Sie die Datei mysecrets.py.")
+
+import mysecrets
+
 
 class NesaPilot:
     def __init__(self):
@@ -44,7 +51,7 @@ class NesaPilot:
         if len(replacements)>0:
             args = [self.applyAllReplacements(a, replacements) for a in args]
         
-        print(args)
+        #print(args)
         # from https://stackoverflow.com/questions/4760215/running-shell-command-and-capturing-the-output
         result = subprocess.run(args, stdout=subprocess.PIPE)
         htmlcode = result.stdout.decode('utf-8')
@@ -61,17 +68,49 @@ class NesaPilot:
 
 
     def getRoom(self, room):
+        # TODO Adust Dates...
+        curr_date = date.today()
+        min_date = curr_date + timedelta(days=-curr_date.weekday())
+        max_date = min_date + timedelta(days=14)
+        print(f"preparing link for min_date={min_date} to max_date={max_date}")
+        r = [['"+view+"', "week"],
+            ['"+curr_date+"', str(curr_date)],
+            ['"+min_date+"', str(min_date)],
+            ['"+max_date+"', str(max_date)]]
+
+        print(r) 
         url = f"https://ksbg.nesa-sg.ch/dview/showzimmerplan.php?id=6zfgfbejsdtwgv3hcuwegujdbg&zimmer={room}"
         res = self.execCurl("generic.curl", [["MYURL", url]])
-        url2 = "https://ksbg.nesa-sg.ch/scheduler_processor.php?view=week&curr_date=2025-02-21&min_date=2025-02-17&max_date=2025-02-24&nouser=1&id=&pageid=&ansicht=raummonitor&timeshift=-60"
+        url2 = f"https://ksbg.nesa-sg.ch/scheduler_processor.php?view=week&curr_date={curr_date}&min_date={min_date}&max_date={max_date}&nouser=1&id=&pageid=&ansicht=raummonitor&timeshift=-60"
+        print(url2)
         xmldata = self.execCurl("generic.curl",[["MYURL", url2]], False)
         # Save xml-Document
         datei = f"roomdata/{room}.xml"
         print(f"Saving xml-Data to file {datei}")
         with open(datei, "wb") as f:
             f.write( html.tostring(xmldata))
+        site = mysecrets.server_url
+        auth=(mysecrets.login_web, mysecrets.password_web)
+        requests.post(f"{site}?roomname={room}", files={'file': open(datei, 'r')}, auth=auth)
+
+
+        
+
 
 if __name__== "__main__":
+    site = mysecrets.server_url
+    auth=(mysecrets.login_web, mysecrets.password_web)
+    response = requests.get(f"{site}", auth=auth)
+    if (response.status_code!=200):
+        print(f"Got http status code {response.status_code} from {site}")
+        exit()
+    roomnames = response.content.decode('utf8')
+    roomnames = roomnames.split("\n")[:-1]
+    print(f"Got he following roomnames: {roomnames}")
+    if len(roomnames)==0:
+        print("No rooms to fetch. Abort")
+        exit()
+
     pilot = NesaPilot()
-    for room in sys.argv[1:]:
+    for room in roomnames:
         pilot.getRoom(room)
