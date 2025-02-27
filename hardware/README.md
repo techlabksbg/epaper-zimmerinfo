@@ -16,3 +16,7 @@ Display:
 ## TPS63020
 ![TPS63020 Boost Converter](boost-buck-converter.jpg)
 
+
+## Solar?
+https://www.instructables.com/The-Reverse-Joule-Thief-Battery-Charger/
+
