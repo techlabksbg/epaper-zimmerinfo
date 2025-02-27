@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+
 /*
 The following file contains something like
 #define SSID "Lord of the Pings"
